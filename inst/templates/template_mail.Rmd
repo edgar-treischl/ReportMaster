@@ -1,0 +1,88 @@
+---
+title: "Report Test Run"
+output: blastula::blastula_email
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE)
+```
+
+<img src= "logo_small.png" align="right">
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+## Runtime Error: `r format(Sys.time(), "%d %B, %Y %H:%M:%S")`
+
+dies ist eine automatisierte Mail mit Fehlermeldungen aus dem OES Reporting Systems. Für folgende LimeSurvey Umfragen konnte kein PDF generiert werden.
+
+
+### Check these bugger(s):
+
+```{r}
+#Check these bugger(s):
+errorlist
+```
+
+
+### Code to debug:
+
+
+```{r, echo=FALSE}
+# Function to generate R code for debugging
+create_TestCode <- function(input_tibble) {
+  # Create a list to store the generated code for each row
+  r_code_list <- lapply(1:nrow(input_tibble), function(i) {
+    # Extract values from the i-th row
+    tmp.snr <- input_tibble$snr[i]
+    tmp.ubb <- input_tibble$ubb[i]
+    tmp.ganztag <- input_tibble$ganztag[i]
+    tmp.audience <- input_tibble$audience[i]
+    tmp.stype <- input_tibble$stype[i]
+    tmp.results <- input_tibble$results[i]
+    
+    # Generate R code for the current row
+    r_code <- paste0(
+      "tmp.snr <- \"", tmp.snr, "\"\n",
+      "tmp.ubb <- ", tmp.ubb, "\n",
+      "tmp.ganztag <- ", tmp.ganztag, "\n",
+      "tmp.audience <- \"", tmp.audience, "\"\n",
+      "tmp.stype <- \"", tmp.stype, "\"\n",
+      "tmp.results <- \"", tmp.results, "\"\n"
+    )
+    
+    return(r_code)
+  })
+  
+  # Return a character vector of R code
+  return(r_code_list)
+}
+
+# # Example usage:
+# # Create a tibble with multiple rows
+# my_tibble <- tibble::tibble(
+#   snr = c("0001", "0002"),
+#   ubb = c(FALSE, TRUE),
+#   ganztag = c(FALSE, TRUE),
+#   audience = c("elt", "stud"),
+#   stype = c("gy", "sec"),
+#   results = c("Eltern", "Students")
+# )
+
+# Generate the R code for all rows in the tibble
+generated_codes <- create_TestCode(errorlist) |> unlist()
+cat(generated_codes)
+
+```
+
+
+
+
+
+
+

@@ -9,19 +9,19 @@ export_tables(meta, snr, data, audience, report, ubb)
 \arguments{
 \item{meta}{Meta data}
 
-\item{snr}{SNR}
+\item{snr}{School number}
 
 \item{data}{Data}
 
-\item{audience}{Reporting group}
+\item{audience}{Audience}
 
-\item{report}{Reporttemplate}
+\item{report}{Report template}
 
-\item{ubb}{UBB TRUE or FALSE}
+\item{ubb}{UBB}
 }
 \value{
-A flextable
+A flextable table
 }
 \description{
-Export all plots as svg and convert them to PDFs
+Export all tables as svg and convert them to pdf
 }

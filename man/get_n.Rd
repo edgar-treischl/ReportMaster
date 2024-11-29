@@ -2,15 +2,15 @@
 % Please edit documentation in R/source.R
 \name{get_n}
 \alias{get_n}
-\title{Get the number of respondents from Limesurvey}
+\title{Get the Number of Respondents from Lime Survey}
 \usage{
 get_n(audience, data)
 }
 \arguments{
-\item{audience}{For which audience}
+\item{audience}{Audience}
 
 \item{data}{Data frame with survey data}
 }
 \description{
-Get the number of respondents from Limesurvey
+Get the Number of Respondents from Lime Survey
 }

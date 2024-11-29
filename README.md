@@ -7,81 +7,47 @@
 
 <!-- badges: end -->
 
-The goal of OESR is to …
+The ReportMaster package is designed to create dynamic survey reports
+automatically. The package retrieves data from Lime Survey, combines it
+with meta data to create dynamic reports and runs only for surveys that
+are expired.
 
 ## Installation
 
-You can install the development version of OESR from
+You can install the development version of ReportMaster from
 [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("pak")
-pak::pak("edgar-treischl/OESR")
+pak::pak("edgar-treischl/ReportMaster")
 ```
 
-# Readme
+## ReportMaster in Action
 
-Dies ist die Dokumentation zur Erstellung von Evaluationsberichten. Der
-Quellcode beinhaltet auch Funktionen aus dem Paket `limer` zum
-Herunterladen von Daten aus Limesurvey. Das Readme File zeigt den Code
-der automatisiert PDFs generiert und als Cron Job bei HWS zu
-implementieren ist.
-
-Die Datei `run_final.R` beinhaltet alle nötigen Schritte, um
-automatisiert PDFs zu generieren.
-
-Um auf die Daten von Limesurvey zugreifen zu können, müssen die
-Zugangsdaten, der Server und der Benutzername für Limesurvey festgelegt
-werden.
-
-Als nächstes benötigen wir eine Liste mit Angaben über die Schule
-(Schulnummer, Schulart, etc.) um einen Bericht zu erstellen. Die
-Funktion `get_snr()` gibt einen Datensatz mit den in Limesurvey
-aufgelisteten Umfragen zurück, die aktiv und abgelaufen sind. Das
-Argument `expired` gibt nur die Umfragen zurück, die gestern abgelaufen
-sind; oder, falls alle Umfragen benötigt werden, via `all`.
+The `run_CronJob()` function is the main function of the package. It
+checks for expired surveys and creates reports for them.
 
 ``` r
-#Are any surveys expired yesterday?
-snrlist <- get_snr(expired = "yesterday")
-snrlist
-
-#> Lucky fellow, there are new expired surveys!
-#> # A tibble:
-#>   snr   ubb   ganztag audience stype results    
-#>   <chr> <lgl> <lgl>   <chr>    <chr> <chr>      
-#> 1 0001  FALSE FALSE   leh      gy    Lehrkraefte
+library(ReportMaster)
+run_CronJob()
+# Lucky fellow, there are new expired surveys!
+# Joining with `by = join_by(sid)`
+# Joining with `by = join_by(sid)`
+# ℹ Get parameters for: Adalbert-Raps-Schule Staatliche Berufsoberschule Kulmbach
+# Joining with `by = join_by(sid)`
+# Joining with `by = join_by(sid)`
+# Joining with `by = join_by(sid)`
+# Joining with `by = join_by(sid, vars)`
+# ✔ Downloaded data from LimeSurvey.
+# ✔ All parameters set.   
+# ✔ Create data and plots [3.3s]
+# ✔ Get report infos [881ms]
+# ✔ Create plots [2.1s]────────────────────────────────────────────────────── 100%
+# ✔ Create tables [4.4s]───────────────────────────────────────────────────── 100%
+# ✔ Exported PDF file for school '0850' and group 'elt'
 ```
 
-Der letzte Schritt läuft nur, wenn gestern Umfragen abgelaufen und diese
-gelistet werden. Um die Reports für die Umfragen zu generieren, wird aus
-dem Datensatz (`snrlist`) eine Liste geniert (`mylist`). Danach nutzt
-die Funktion `pwalk()` aus dem `purrr` Package eine Wrapper Funktion
-namens `create_reports()`, um alle benötigen Schritte durchzuführen.
-Wenn der letzte Schritt erfolgreich durchlaufen wird, sollte ein PDF
-Report für jeden gelisteten Fall der `snrlist` generiert werden.
-
-``` r
-#Only in case of new reports
-if (exists("snrlist") == TRUE) {
-  
-  #Make a list
-  mylist <- list(snr = snrlist$snr,
-                 ganztag = snrlist$ganztag,
-                 audience = snrlist$audience,
-                 ubb = snrlist$ubb,
-                 stype = snrlist$stype,
-                 results = snrlist$results)
-  
-  #Create reports based on snr list
-  purrr::pwalk(mylist, create_reports)
-}
-```
-
-Weitere Informationen über die Wrapper Funktionen, Struktur des
-Projekts, etc. kann der Vignette entnommen werden.
-
-# To Be Done
+## To Be Done
 
 Anpassung der Daten für die Filterfragen. Bislang werfen wir alles weg,
 was “k. A.” ist.

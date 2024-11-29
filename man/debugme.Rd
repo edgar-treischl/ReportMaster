@@ -7,17 +7,17 @@
 debugme(tmp.snr, tmp.ubb, tmp.ganztag, tmp.audience, tmp.stype, tmp.results)
 }
 \arguments{
-\item{tmp.snr}{The snr}
+\item{tmp.snr}{School number}
 
-\item{tmp.ubb}{The ubb}
+\item{tmp.ubb}{UBB}
 
-\item{tmp.ganztag}{The ganztag}
+\item{tmp.ganztag}{Ganztagschule}
 
-\item{tmp.audience}{The audience}
+\item{tmp.audience}{Audience}
 
-\item{tmp.stype}{The stype}
+\item{tmp.stype}{School type}
 
-\item{tmp.results}{The results string}
+\item{tmp.results}{Results string}
 }
 \value{
 Error message

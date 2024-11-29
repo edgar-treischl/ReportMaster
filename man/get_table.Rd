@@ -2,28 +2,28 @@
 % Please edit documentation in R/create_tables.R
 \name{get_table}
 \alias{get_table}
-\title{Get table}
+\title{Get a Table of the Report}
 \usage{
 get_table(meta, snr, audience, report, data, export = FALSE, ubb)
 }
 \arguments{
 \item{meta}{Metadata}
 
-\item{snr}{SNR}
+\item{snr}{School number}
 
-\item{audience}{Audience of the report}
+\item{audience}{Audience}
 
-\item{report}{Reporttemplate}
+\item{report}{Report template}
 
 \item{data}{Data}
 
 \item{export}{Export}
 
-\item{ubb}{UBB TRUE or FALSE}
+\item{ubb}{UBB}
 }
 \value{
-A flextable
+A flextable table
 }
 \description{
-Get a flextable for RAW data input
+Get a table of the report for each plot
 }

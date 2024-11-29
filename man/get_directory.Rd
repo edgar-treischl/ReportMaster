@@ -7,11 +7,11 @@
 get_directory(snr)
 }
 \arguments{
-\item{snr}{The schoolnumber}
+\item{snr}{School number}
 }
 \value{
-Foldername or warning
+String
 }
 \description{
-Bla bla
+Returns the main directory of the results
 }

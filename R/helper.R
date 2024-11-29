@@ -1,7 +1,7 @@
 #' Get the directory
-#' @description Bla bla
-#' @param snr The schoolnumber
-#' @return Foldername or warning
+#' @description Returns the main directory of the results
+#' @param snr School number
+#' @return String
 #' @export
 
 get_directory <- function(snr) {
@@ -13,10 +13,10 @@ get_directory <- function(snr) {
 }
 
 #' Get the directory of the results
-#' @description Bla bla
-#' @param snr The schoolnumber
-#' @param audience The audience of the report
-#' @return Foldername
+#' @description Get the sub-directory of the results
+#' @param snr School number
+#' @param audience Report audience
+#' @return String
 #' @export
 
 get_directory_res <- function(snr, audience) {
@@ -29,8 +29,8 @@ get_directory_res <- function(snr, audience) {
 
 
 #' Get school name
-#' @description Get school name (string) based on their school number
-#' @param snr School number as a character string
+#' @description Get school name based on their school number
+#' @param snr School number
 #' @export
 get_sname = function (snr) {
 
@@ -50,10 +50,11 @@ get_sname = function (snr) {
   return(tmp.name)
 }
 
-#' Get the rmd code for the report
-#' @description Functions runs export_plots function for testing a  single plot
+#' Get Rmd Code for the Report
+#' @description Depending on the number of plots and tables, the function
+#'  creates the Rmd chunks for the report
 #' @param x_seq Sequence
-#' @return Returns a plot
+#' @return Character
 #' @export
 
 get_rmd <- function(x_seq) {
@@ -80,11 +81,12 @@ get_rmd <- function(x_seq) {
 
 
 #' Generate the Rmd file for the report
-#' @description Functions runs export_plots function for testing a  single plot
+#' @description Functions combines the template and adds the Rmd content
+#'  from the get_rmd function
 #' @param x_seq Sequence
-#' @param ubb UBB TRUE or FALSE
-#' @param export Export TRUE or FALSE
-#' @param file_name Filename
+#' @param ubb UBB
+#' @param export Export
+#' @param file_name File name
 #' @return Returns a plot
 #' @export
 
@@ -133,15 +135,14 @@ generate_rmd <- function(x_seq,
 #generate_rmd(1:44, ubb = TRUE)
 
 #' Create directories
-#' @description Create folder directories for the report
-#' @param snr schoolnumber
-#' @param audience audience
+#' @description Create directories for the report
+#' @param snr School number
+#' @param audience Audience
 #' @param ubb UBB
 #'
 #' @export
 create_directories <- function (snr, audience, ubb) {
 
-  #Create path
   #Create if not already exists
   if(!dir.exists("res")){
     dir.create("res")
@@ -188,29 +189,25 @@ create_directories <- function (snr, audience, ubb) {
 
 
 
-
-
-
-
-#' Create reports
-#' @description Run all functions to create several reports at once
-#' @param snr Schoolnumber
-#' @param audience Report audience
-#' @param ubb UBB TRUE or FALSE
-#' @param results Results: Text string for audience of the report
-#' @param ganztag Ganztagsschule TRUE or FALSE
-#' @param stype Schooltype
+#' Create report
+#' @description Run all functions to create a report
+#' @param snr School number
+#' @param audience Audience
+#' @param ubb UBB
+#' @param results Results: Text string for Audience
+#' @param ganztag Ganztagsschule
+#' @param stype School type
 #' @examples
 #' \dontrun{
 #' purrr::pwalk(mylist, run_aslist)
 #' }
 #' @export
-create_reports <- function(snr,
-                           audience,
-                           ubb,
-                           results,
-                           ganztag,
-                           stype) {
+create_report <- function(snr,
+                          audience,
+                          ubb,
+                          results,
+                          ganztag,
+                          stype) {
 
 
   tmp.server <- config::get("tmp.server")
@@ -423,11 +420,12 @@ create_reports <- function(snr,
 
 
 
-#' Check whether a survey has valid response
-#' @description Check if a survey has valid response
+#' Check if a survey on Lime Survey has valid response
+#'
+#' @description Connect to Lime Survey and checks if a survey has valid response
 #' @param snr School number
 #' @param audience Audience
-#' @param ubb UBB TRUE or FALSE
+#' @param ubb UBB
 
 check_response <- function (snr,
                             audience,
@@ -541,19 +539,20 @@ check_response <- function (snr,
 
 
 
-#' Run Parallel
-#' @description Run all functions to create a report parallel
-#' @param snr Schoolnumber
-#' @param audience Report audience
-#' @param ubb UBB TRUE or FALSE
-#' @param results Results: Text string for audience of the report
-#' @param ganztag Ganztagsschule TRUE or FALSE
-#' @param stype Schooltype
-#' @return Returns Rds, Plots, and PDF report
+#' Run in Parallel Mode
+#'
+#' @description Run all functions to create a report in parallel
+#' @param snr School number
+#' @param audience Audience
+#' @param ubb UBB
+#' @param results Results: Text string for Audience
+#' @param ganztag Ganztagsschule
+#' @param stype School type
+#' @return Returns PDF file
 #'
 #' @export
 
-runParallel <- function(snr,
+run_Parallel <- function(snr,
                         audience,
                         ubb,
                         results,
@@ -666,19 +665,13 @@ runParallel <- function(snr,
 
 
 
-
-
-
-
-
-
-#' Test Export Plot Function
-#' @description Functions runs export_plots function for testing a  single plot
-#' @param testmeta Testmeta
+#' Test Export Function
+#' @description Functions runs export_plots function for testing a single plot
+#' @param testmeta Test meta data
 #' @return Returns a plot
 #'
 
-test_ExportPlot <- function(testmeta) {
+test_ExportFun <- function(testmeta) {
 
   #Split meta list
   tmp.var <- stringr::str_split(testmeta,"#") |> unlist()
@@ -778,12 +771,12 @@ test_ExportPlot <- function(testmeta) {
 
 
 
-#' Superseded by Parallelization: Export table headers
-#' @description Returns text for reports (headers)
-#' @param meta Metadata
-#' @param ubb UBB TRUE or FALSE
+#' Export table headers (Superseded by Parallelization)
+#' @description Returns text (headers) for the reports
+#' @param meta Meta data
+#' @param ubb UBB
 #'
-#' @return data frame (Headers)
+#' @return data
 #' @export
 export_headers <- function (meta,
                             ubb) {

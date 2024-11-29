@@ -2,18 +2,18 @@
 % Please edit documentation in R/helper.R
 \name{export_headers}
 \alias{export_headers}
-\title{Superseded by Parallelization: Export table headers}
+\title{Export table headers (Superseded by Parallelization)}
 \usage{
 export_headers(meta, ubb)
 }
 \arguments{
-\item{meta}{Metadata}
+\item{meta}{Meta data}
 
-\item{ubb}{UBB TRUE or FALSE}
+\item{ubb}{UBB}
 }
 \value{
-data frame (Headers)
+data
 }
 \description{
-Returns text for reports (headers)
+Returns text (headers) for the reports
 }

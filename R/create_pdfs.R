@@ -1,9 +1,10 @@
 #' Create PDFs
-#' @description Create a PDF report
-#' @param snr Schoolnumber
-#' @param audience Reporting group
+#'
+#' @description Create a PDF report based on exported plots and data.
+#' @param snr School number
+#' @param audience Audience
 #' @param name Name
-#' @param ubb UBB TRUE or FALSE
+#' @param ubb UBB
 #' @param n Number of observations
 #' @param results String for reporting group
 #' @param d Duration (UBB only)

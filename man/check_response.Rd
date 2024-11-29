@@ -2,7 +2,7 @@
 % Please edit documentation in R/helper.R
 \name{check_response}
 \alias{check_response}
-\title{Check whether a survey has valid response}
+\title{Check if a survey on Lime Survey has valid response}
 \usage{
 check_response(snr, audience, ubb)
 }
@@ -11,8 +11,8 @@ check_response(snr, audience, ubb)
 
 \item{audience}{Audience}
 
-\item{ubb}{UBB TRUE or FALSE}
+\item{ubb}{UBB}
 }
 \description{
-Check if a survey has valid response
+Connect to Lime Survey and checks if a survey has valid response
 }

@@ -3,7 +3,7 @@
 \docType{data}
 \name{schools_names}
 \alias{schools_names}
-\title{The schools_names data}
+\title{The school names data.}
 \format{
 A data frame with 54 rows and 7 variables:
 \describe{
@@ -13,5 +13,5 @@ A data frame with 54 rows and 7 variables:
 }
 }
 \description{
-This data defines sets, lables, colors, etc.
+This data contains the school names.
 }

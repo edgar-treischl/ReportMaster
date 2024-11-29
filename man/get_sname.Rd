@@ -7,8 +7,8 @@
 get_sname(snr)
 }
 \arguments{
-\item{snr}{School number as a character string}
+\item{snr}{School number}
 }
 \description{
-Get school name (string) based on their school number
+Get school name based on their school number
 }

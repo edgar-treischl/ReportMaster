@@ -10,16 +10,19 @@
 # tmp.audience <- "leh"
 # tmp.stype <- "gy"
 # tmp.results <- "Eltern"
+#
+# debugme(tmp.snr, tmp.ubb, tmp.ganztag, tmp.audience, tmp.stype, tmp.results)
+#
 # ############################################################################
 
 #' Debug the Code
 #' @description Function runs the code and returns error messages.
-#' @param tmp.snr The snr
-#' @param tmp.ubb The ubb
-#' @param tmp.ganztag The ganztag
-#' @param tmp.audience The audience
-#' @param tmp.stype The stype
-#' @param tmp.results The results string
+#' @param tmp.snr School number
+#' @param tmp.ubb UBB
+#' @param tmp.ganztag Ganztagschule
+#' @param tmp.audience Audience
+#' @param tmp.stype School type
+#' @param tmp.results Results string
 #' @return Error message
 #' @export
 
@@ -38,7 +41,7 @@ debugme <- function(tmp.snr,
                  results = tmp.results)
 
   #Create reports based on snr list
-  results <- purrr::pmap(mylist, purrr::safely(create_reports))
+  results <- purrr::pmap(mylist, purrr::safely(create_report))
 
 
   error_messages <- purrr::map_chr(results, function(res) {
@@ -54,5 +57,4 @@ debugme <- function(tmp.snr,
 
 }
 
-#debugme(tmp.snr, tmp.ubb, tmp.ganztag, tmp.audience, tmp.stype, tmp.results)
 

@@ -2,21 +2,21 @@
 % Please edit documentation in R/source.R
 \name{surveyGetSurveyIds}
 \alias{surveyGetSurveyIds}
-\title{Gets metadata of the surveys}
+\title{Gets Meta Data of the Surveys}
 \usage{
 surveyGetSurveyIds(snr, year, ubb)
 }
 \arguments{
-\item{snr}{Schoolnumber}
+\item{snr}{School number}
 
 \item{year}{Year}
 
-\item{ubb}{ubb}
+\item{ubb}{UBB}
 }
 \value{
-vector mit IDs der Surveys einer Schule
+Vector with survey IDs
 }
 \description{
-Fragt fuer eine Liste von Survey-Ids aus Limesurvey die Metadaten
-der Befragungen ab.
+Queries the survey's metadata for a list of survey IDs
+from Lime Survey
 }

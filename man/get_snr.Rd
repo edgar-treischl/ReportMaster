@@ -7,7 +7,7 @@
 get_snr(expired)
 }
 \arguments{
-\item{expired}{all or yesterday}
+\item{expired}{All or Yesterday}
 }
 \description{
 Get school numbers listed in Lime Survey

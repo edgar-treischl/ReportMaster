@@ -19,5 +19,5 @@ A data frame with 112 rows and 5 variables:
 }
 }
 \description{
-This data defines sets, lables, colors, etc.
+This data defines muster, survey, and report template.
 }

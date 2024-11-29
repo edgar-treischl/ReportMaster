@@ -1,10 +1,10 @@
 #' Connect with Limesurvey
 #'
-#' @description Verbindung mit Limesurvey aufbauen
+#' @description Creates the connection to Limesurvey
 #' @param server Sever name
-#' @param user Limesurvey user
-#' @param credential Limesurvey credential
-#' @return session id aus Limesurvey
+#' @param user Lime Survey user
+#' @param credential Lime Survey credential
+#' @return Sesssion ID
 #' @export
 
 surveyConnectLs <- function(server,
@@ -43,15 +43,15 @@ surveyConnectLs <- function(server,
 
 
 
-#' Gets metadata of the surveys
+#' Gets Meta Data of the Surveys
 #'
-#' @description Fragt fuer eine Liste von Survey-Ids aus Limesurvey die Metadaten
-#'  der Befragungen ab.
+#' @description Queries the survey's metadata for a list of survey IDs
+#'  from Lime Survey
 #'
-#' @param snr Schoolnumber
+#' @param snr School number
 #' @param year Year
-#' @param ubb ubb
-#' @return vector mit IDs der Surveys einer Schule
+#' @param ubb UBB
+#' @return Vector with survey IDs
 #' @export
 #'
 surveyGetSurveyIds <- function(snr,
@@ -102,12 +102,12 @@ surveyGetSurveyIds <- function(snr,
 
 
 
-#' Anzahl full responses eines Surveys abrufen
+#' Get Completed Responses of a Survey
 #'
-#' @description Fragt mit get_summary method die Anzahl der full responses ab.
+#' @description Queries the number of completed responses with get_summary method.
 #'
-#' @param id id (num)
-#' @return df
+#' @param id Survey ID
+#' @return data frame
 #' @export
 #'
 surveyGetResponseStat <- function(id){
@@ -128,12 +128,13 @@ surveyGetResponseStat <- function(id){
   return(tmp)
 }
 
-#' Metadaten von Surveys abrufen
+#' Get Meta Data of the Surveys
 #'
-#' @description Fragt fuer eine Liste von Survey-Ids aus Limesurvey die Metadaten
-#'  der Befragungen ab
-#' @param ids Vector mit Ids
-#' @return data.frame mit Metadaten der Surveys
+#' @description Queries the metadata of the surveys for a list of survey IDs
+#'  from Limesurvey
+#'
+#' @param ids Survey IDs
+#' @return Data frame
 #' @export
 surveyGetMetaData <- function(ids){
   # alle survey
@@ -172,13 +173,13 @@ surveyGetMetaData <- function(ids){
   return(tmp.ques.df)
 }
 
-#' Surveys abrufen
+#' Get Survey Data
 #'
-#' @description Fragt fuer eine Liste von Survey-Ids vollstaendige Datensaetze
-#'  aus Limesurvey ab.
-#' @param df Vector mit Ids
-#' @param response Response indicator for Limesurvey
-#' @return data.frame
+#' @description Queries complete data records from Limesurvey for a list
+#'  of survey IDs.
+#' @param df Vector with Ids
+#' @param response Response indicator for Lime Survey
+#' @return data frame
 #' @export
 #'
 surveyGetData <- function(df,
@@ -567,9 +568,11 @@ plotGetData <- function(data,
 
 
 #' Get school numbers
+#'
 #' @description Get school numbers listed in Lime Survey
-#' @param expired all or yesterday
+#' @param expired All or Yesterday
 #' @export
+#'
 get_snr = function (expired) {
 
   tmp.server <- config::get("tmp.server")
@@ -786,10 +789,11 @@ get_snr = function (expired) {
 
 
 
-#' Get a list with school numbers
+#' Get a List with School Numbers
+#'
 #' @description Get school name (string) based on their school number
-#' @param drop Drop TRUE or FALSE
-#' @param append Append TRUE or FALSE
+#' @param drop Drop survey with no completed response
+#' @param append Append Overall report
 #' @export
 get_snrlist <- function(drop = TRUE,
                         append = FALSE) {
@@ -850,9 +854,9 @@ get_snrlist <- function(drop = TRUE,
 
 
 
-#' Get the number of respondents from Limesurvey
+#' Get the Number of Respondents from Lime Survey
 #'
-#' @param audience For which audience
+#' @param audience Audience
 #' @param data Data frame with survey data
 #' @export
 get_n = function (audience,
@@ -882,12 +886,13 @@ get_n = function (audience,
 
 
 
-#' Get report package (report package, survey, and report template)
+#' Get Report Package (report package, survey, and report template)
+#'
 #' @description Get rprtpckg (and survey) for a school
-#' @param report Which report type
-#' @param school Which school type
-#' @param ubbs UBB TRUE or FALSE
-#' @param allday Ganztag TRUE or FALSE
+#' @param report Report template
+#' @param school School type
+#' @param ubbs UBB
+#' @param allday Ganztag
 #' @export
 get_rprtpckg <-  function (report,
                            school,
@@ -950,14 +955,14 @@ get_rprtpckg <-  function (report,
 
 
 
-#' Get parameters
+#' Get Parameters
 #' @description Get all survey parameter (reportpackage, valid n, etc,)
-#'  and raw data from limesurvey
-#' @param snr Schoolnumber
-#' @param audience Report audience
-#' @param ubb UBB TRUE or FALSE
+#'  and raw data from Lime Survey
+#' @param snr School number
+#' @param audience Audience
+#' @param ubb UBB
 #' @param stype School type
-#' @param ganztag Ganztag TRUE or FALSE
+#' @param ganztag Ganztag
 #'
 #' @return List of parameters
 #' @export

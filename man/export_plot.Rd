@@ -2,25 +2,25 @@
 % Please edit documentation in R/create_graphs.R
 \name{export_plot}
 \alias{export_plot}
-\title{Export plots}
+\title{Export a plot}
 \usage{
 export_plot(meta, snr, audience, report, data, ubb, export = TRUE)
 }
 \arguments{
 \item{meta}{Meta data}
 
-\item{snr}{Schoolnumber}
+\item{snr}{School number}
 
-\item{audience}{audience}
+\item{audience}{Audience}
 
-\item{report}{Reporttemplate}
+\item{report}{Report template}
 
 \item{data}{Data}
 
-\item{ubb}{TRUE or FALSE}
+\item{ubb}{UBB}
 
-\item{export}{TRUE or FALSE}
+\item{export}{Export}
 }
 \description{
-Function to export pngs directly.
+Function creates and export a plot.
 }

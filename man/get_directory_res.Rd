@@ -7,13 +7,13 @@
 get_directory_res(snr, audience)
 }
 \arguments{
-\item{snr}{The schoolnumber}
+\item{snr}{School number}
 
-\item{audience}{The audience of the report}
+\item{audience}{Report audience}
 }
 \value{
-Foldername
+String
 }
 \description{
-Bla bla
+Get the sub-directory of the results
 }

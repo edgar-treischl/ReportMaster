@@ -2,7 +2,7 @@
 % Please edit documentation in R/helper.R
 \name{get_rmd}
 \alias{get_rmd}
-\title{Get the rmd code for the report}
+\title{Get Rmd Code for the Report}
 \usage{
 get_rmd(x_seq)
 }
@@ -10,8 +10,9 @@ get_rmd(x_seq)
 \item{x_seq}{Sequence}
 }
 \value{
-Returns a plot
+Character
 }
 \description{
-Functions runs export_plots function for testing a  single plot
+Depending on the number of plots and tables, the function
+creates the Rmd chunks for the report
 }

@@ -2,14 +2,14 @@
 % Please edit documentation in R/source.R
 \name{get_snrlist}
 \alias{get_snrlist}
-\title{Get a list with school numbers}
+\title{Get a List with School Numbers}
 \usage{
 get_snrlist(drop = TRUE, append = FALSE)
 }
 \arguments{
-\item{drop}{Drop TRUE or FALSE}
+\item{drop}{Drop survey with no completed response}
 
-\item{append}{Append TRUE or FALSE}
+\item{append}{Append Overall report}
 }
 \description{
 Get school name (string) based on their school number

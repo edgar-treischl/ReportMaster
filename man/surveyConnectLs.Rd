@@ -9,13 +9,13 @@ surveyConnectLs(server, user, credential)
 \arguments{
 \item{server}{Sever name}
 
-\item{user}{Limesurvey user}
+\item{user}{Lime Survey user}
 
-\item{credential}{Limesurvey credential}
+\item{credential}{Lime Survey credential}
 }
 \value{
-session id aus Limesurvey
+Sesssion ID
 }
 \description{
-Verbindung mit Limesurvey aufbauen
+Creates the connection to Limesurvey
 }

@@ -1,13 +1,14 @@
-#' Get table
-#' @description Get a flextable for RAW data input
+#' Get a Table of the Report
+#'
+#' @description Get a table of the report for each plot
 #' @param meta Metadata
-#' @param snr SNR
-#' @param audience Audience of the report
-#' @param report Reporttemplate
+#' @param snr School number
+#' @param audience Audience
+#' @param report Report template
 #' @param data Data
 #' @param export Export
-#' @param ubb UBB TRUE or FALSE
-#' @return A flextable
+#' @param ubb UBB
+#' @return A flextable table
 #' @export
 
 get_table = function (meta,
@@ -339,15 +340,16 @@ get_table = function (meta,
 
 
 #' Export tables
-#' @description Export all plots as svg and convert them to PDFs
-#' @param meta Meta data
-#' @param snr SNR
-#' @param data Data
-#' @param audience Reporting group
-#' @param report Reporttemplate
-#' @param ubb UBB TRUE or FALSE
 #'
-#' @return A flextable
+#' @description Export all tables as svg and convert them to pdf
+#' @param meta Meta data
+#' @param snr School number
+#' @param data Data
+#' @param audience Audience
+#' @param report Report template
+#' @param ubb UBB
+#'
+#' @return A flextable table
 #' @export
 #'
 export_tables = function (meta,

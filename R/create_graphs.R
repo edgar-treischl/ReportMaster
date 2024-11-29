@@ -1,12 +1,13 @@
-#' Export plots
-#' @description Function to export pngs directly.
+#' Export a plot
+#'
+#' @description Function creates and export a plot.
 #' @param meta Meta data
-#' @param snr Schoolnumber
-#' @param audience audience
-#' @param report Reporttemplate
+#' @param snr School number
+#' @param audience Audience
+#' @param report Report template
 #' @param data Data
-#' @param ubb TRUE or FALSE
-#' @param export TRUE or FALSE
+#' @param ubb UBB
+#' @param export Export
 #' @export
 
 export_plot = function (meta,
@@ -207,13 +208,13 @@ export_plot = function (meta,
 
 
 #' Create all report plots at once simplified
-#' @description Create all report plots at once simplified, direct export of pngs
+#' @description Create all report plots at once simplified (direct export)
 #' @param meta Meta data
-#' @param snr Schoolnumber
+#' @param snr School number
 #' @param audience Audience
-#' @param report Reporttemplate
+#' @param report Report template
 #' @param data Data
-#' @param ubb TRUE or FALSE
+#' @param ubb UBB
 #' @export
 
 create_allplots2 = function (meta,

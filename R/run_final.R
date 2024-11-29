@@ -9,7 +9,7 @@
 #' @export
 
 
-runCronJob <- function() {
+run_CronJob <- function() {
   #Get expired surveys
   snrlist <- get_snrlist(append = FALSE)
 
@@ -38,7 +38,7 @@ runCronJob <- function() {
 
     #Create reports based on snr list
     #results <- purrr::pmap(mylist, purrr::safely(create_reports))
-    results <- purrr::pmap(mylist, purrr::safely(runParallel))
+    results <- purrr::pmap(mylist, purrr::safely(run_Parallel))
 
 
     # Check for failed reports
@@ -81,7 +81,7 @@ runCronJob <- function() {
 
 }
 
-#runCronJob()
+#run_CronJob()
 
 
 

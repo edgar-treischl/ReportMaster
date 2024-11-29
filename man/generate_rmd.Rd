@@ -9,15 +9,16 @@ generate_rmd(x_seq, ubb, export = TRUE, file_name = "generated_document.Rmd")
 \arguments{
 \item{x_seq}{Sequence}
 
-\item{ubb}{UBB TRUE or FALSE}
+\item{ubb}{UBB}
 
-\item{export}{Export TRUE or FALSE}
+\item{export}{Export}
 
-\item{file_name}{Filename}
+\item{file_name}{File name}
 }
 \value{
 Returns a plot
 }
 \description{
-Functions runs export_plots function for testing a  single plot
+Functions combines the template and adds the Rmd content
+from the get_rmd function
 }

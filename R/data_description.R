@@ -18,9 +18,9 @@
 NULL
 
 
-#' The plot headers
+#' The plot headers data
 #'
-#' This data defines sets, lables, colors, etc.
+#' This data which headers are displayed by each plot of the survey.
 #'
 #' @format A data frame with 112 rows and 5 variables:
 #' \describe{
@@ -35,9 +35,9 @@ NULL
 #' @docType data
 NULL
 
-#' The UBB plot headers
+#' The UBB plot headers data
 #'
-#' This data defines sets, lables, colors, etc.
+#' This data which headers are displayed by each plot of the UBB.
 #'
 #' @format A data frame with 112 rows and 5 variables:
 #' \describe{
@@ -53,7 +53,7 @@ NULL
 
 #' The Report Data
 #'
-#' This data defines sets, lables, colors, etc.
+#' This data all report templates.
 #'
 #' @format A data frame with 112 rows and 5 variables:
 #' \describe{
@@ -74,7 +74,7 @@ NULL
 
 #' The Templates data
 #'
-#' This data defines sets, lables, colors, etc.
+#' This data defines muster, survey, and report template.
 #'
 #' @format A data frame with 112 rows and 5 variables:
 #' \describe{
@@ -92,9 +92,9 @@ NULL
 #' @docType data
 NULL
 
-#' The schools_names data
+#' The school names data.
 #'
-#' This data defines sets, lables, colors, etc.
+#' This data contains the school names.
 #'
 #' @format A data frame with 54 rows and 7 variables:
 #' \describe{

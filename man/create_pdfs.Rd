@@ -7,13 +7,13 @@
 create_pdfs(snr, audience, name, ubb, n, results, d = NULL, drop = TRUE)
 }
 \arguments{
-\item{snr}{Schoolnumber}
+\item{snr}{School number}
 
-\item{audience}{Reporting group}
+\item{audience}{Audience}
 
 \item{name}{Name}
 
-\item{ubb}{UBB TRUE or FALSE}
+\item{ubb}{UBB}
 
 \item{n}{Number of observations}
 
@@ -27,5 +27,5 @@ create_pdfs(snr, audience, name, ubb, n, results, d = NULL, drop = TRUE)
 PDF file
 }
 \description{
-Create a PDF report
+Create a PDF report based on exported plots and data.
 }

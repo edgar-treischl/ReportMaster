@@ -9,16 +9,16 @@ create_allplots2(meta, snr, audience, report, data, ubb)
 \arguments{
 \item{meta}{Meta data}
 
-\item{snr}{Schoolnumber}
+\item{snr}{School number}
 
 \item{audience}{Audience}
 
-\item{report}{Reporttemplate}
+\item{report}{Report template}
 
 \item{data}{Data}
 
-\item{ubb}{TRUE or FALSE}
+\item{ubb}{UBB}
 }
 \description{
-Create all report plots at once simplified, direct export of pngs
+Create all report plots at once simplified (direct export)
 }

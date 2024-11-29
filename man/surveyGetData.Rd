@@ -2,19 +2,19 @@
 % Please edit documentation in R/source.R
 \name{surveyGetData}
 \alias{surveyGetData}
-\title{Surveys abrufen}
+\title{Get Survey Data}
 \usage{
 surveyGetData(df, response = "short")
 }
 \arguments{
-\item{df}{Vector mit Ids}
+\item{df}{Vector with Ids}
 
-\item{response}{Response indicator for Limesurvey}
+\item{response}{Response indicator for Lime Survey}
 }
 \value{
-data.frame
+data frame
 }
 \description{
-Fragt fuer eine Liste von Survey-Ids vollstaendige Datensaetze
-aus Limesurvey ab.
+Queries complete data records from Limesurvey for a list
+of survey IDs.
 }

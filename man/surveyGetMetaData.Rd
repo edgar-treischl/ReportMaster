@@ -2,17 +2,17 @@
 % Please edit documentation in R/source.R
 \name{surveyGetMetaData}
 \alias{surveyGetMetaData}
-\title{Metadaten von Surveys abrufen}
+\title{Get Meta Data of the Surveys}
 \usage{
 surveyGetMetaData(ids)
 }
 \arguments{
-\item{ids}{Vector mit Ids}
+\item{ids}{Survey IDs}
 }
 \value{
-data.frame mit Metadaten der Surveys
+Data frame
 }
 \description{
-Fragt fuer eine Liste von Survey-Ids aus Limesurvey die Metadaten
-der Befragungen ab
+Queries the metadata of the surveys for a list of survey IDs
+from Limesurvey
 }

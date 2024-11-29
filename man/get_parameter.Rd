@@ -2,25 +2,25 @@
 % Please edit documentation in R/source.R
 \name{get_parameter}
 \alias{get_parameter}
-\title{Get parameters}
+\title{Get Parameters}
 \usage{
 get_parameter(snr, audience, ubb, stype, ganztag)
 }
 \arguments{
-\item{snr}{Schoolnumber}
+\item{snr}{School number}
 
-\item{audience}{Report audience}
+\item{audience}{Audience}
 
-\item{ubb}{UBB TRUE or FALSE}
+\item{ubb}{UBB}
 
 \item{stype}{School type}
 
-\item{ganztag}{Ganztag TRUE or FALSE}
+\item{ganztag}{Ganztag}
 }
 \value{
 List of parameters
 }
 \description{
 Get all survey parameter (reportpackage, valid n, etc,)
-and raw data from limesurvey
+and raw data from Lime Survey
 }

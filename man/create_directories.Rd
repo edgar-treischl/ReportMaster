@@ -7,12 +7,12 @@
 create_directories(snr, audience, ubb)
 }
 \arguments{
-\item{snr}{schoolnumber}
+\item{snr}{School number}
 
-\item{audience}{audience}
+\item{audience}{Audience}
 
 \item{ubb}{UBB}
 }
 \description{
-Create folder directories for the report
+Create directories for the report
 }

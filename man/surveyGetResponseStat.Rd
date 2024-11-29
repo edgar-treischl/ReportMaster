@@ -2,16 +2,16 @@
 % Please edit documentation in R/source.R
 \name{surveyGetResponseStat}
 \alias{surveyGetResponseStat}
-\title{Anzahl full responses eines Surveys abrufen}
+\title{Get Completed Responses of a Survey}
 \usage{
 surveyGetResponseStat(id)
 }
 \arguments{
-\item{id}{id (num)}
+\item{id}{Survey ID}
 }
 \value{
-df
+data frame
 }
 \description{
-Fragt mit get_summary method die Anzahl der full responses ab.
+Queries the number of completed responses with get_summary method.
 }

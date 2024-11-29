@@ -3,7 +3,7 @@
 \docType{data}
 \name{plots_headers}
 \alias{plots_headers}
-\title{The plot headers}
+\title{The plot headers data}
 \format{
 A data frame with 112 rows and 5 variables:
 \describe{
@@ -16,5 +16,5 @@ A data frame with 112 rows and 5 variables:
 }
 }
 \description{
-This data defines sets, lables, colors, etc.
+This data which headers are displayed by each plot of the survey.
 }

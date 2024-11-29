@@ -6,7 +6,7 @@
 #
 #
 #
-# library(OESR)
+# library(ReportMaster)
 # Sys.setenv(R_CONFIG_ACTIVE = "default")
 #
 # #Parameters######################################################
@@ -15,12 +15,9 @@
 # #Report for: audience == sus, leh, elt, all, ubb, aus
 # tmp.audience <- "sus"
 #
-# tmp.results <- "Testrun"
-# tmp.stype <- "gy"
+# tmp.results <- "Lehrer"
+# tmp.stype <- "leh"
 # tmp.ganztag <- FALSE
-#
-#
-# create_directories(snr = tmp.snr, audience = tmp.audience, ubb = tmp.ubb)
 #
 #
 # #Run###########################################################

@@ -142,6 +142,11 @@ generate_rmd <- function(x_seq,
 create_directories <- function (snr, audience, ubb) {
 
   #Create path
+  #Create if not already exists
+  if(!dir.exists("res")){
+    dir.create("res")
+  }
+
   year <- format(Sys.Date(), "%Y")
 
   tmp.dir <- here::here("res", paste0(snr, "_", year))

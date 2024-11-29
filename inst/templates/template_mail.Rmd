@@ -30,7 +30,7 @@ errorlist
 ```
 
 
-### Code to debug:
+### Check these cases ...
 
 
 ```{r, echo=FALSE}
@@ -82,7 +82,14 @@ cat(generated_codes)
 
 
 
+### Debug with ...
 
+```{r, eval=FALSE, echo=TRUE}
+library(ReportMaster)
+Sys.setenv(R_CONFIG_ACTIVE = "production")
+debugme(tmp.snr, tmp.ubb, tmp.ganztag, tmp.audience, tmp.stype, tmp.results)
+
+```
 
 
 

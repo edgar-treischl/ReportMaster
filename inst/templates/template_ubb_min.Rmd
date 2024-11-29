@@ -16,7 +16,7 @@ params:
 ---
 
 ```{r, include=FALSE}
-library(OESR)
+library(ReportMaster)
 Sys.setenv(R_CONFIG_ACTIVE = "default")
 
 knitr::opts_chunk$set(echo = FALSE)

@@ -7,6 +7,8 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(OESR)
+library(ReportMaster)
 
-test_check("OESR")
+test_check("ReportMaster")
+
+

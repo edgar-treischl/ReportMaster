@@ -96,10 +96,13 @@ generate_rmd <- function(x_seq,
   # Read the template file content for the YAML header and any other template content
   #yaml_header <- "---\ntitle: \"Untitled\"\noutput: html_document\ndate: \"2024-11-26\"\n---\n"
 
+  syspath <- system.file(package = "ReportMaster")
+  package_path <- paste0(syspath, "/templates/")
+
   if (ubb) {
-    yaml_header <- readLines(here::here("tmplts", "template_ubb_min.Rmd"))
+    yaml_header <- readLines(paste0(package_path, "template_ubb_min.Rmd"))
   }else {
-    yaml_header <- readLines(here::here("tmplts", "template_min.Rmd"))
+    yaml_header <- readLines(paste0(package_path, "template_min.Rmd"))
   }
 
 
@@ -148,26 +151,28 @@ create_directories <- function (snr, audience, ubb) {
     dir.create(tmp.dir)
   }
 
+  syspath <- system.file(package = "ReportMaster")
+  package_path <- paste0(syspath, "/templates/")
 
   if (ubb == TRUE) {
 
     file.copy(
-      from = here::here("tmplts", "graphic_title_ubb.png"),
+      from = paste0(package_path, "graphic_title_ubb.png"),
       to = paste0(tmp.dir, "/graphic_title_ubb.png")
     )
 
     file.copy(
-      from = here::here("tmplts", "header_eva_las.png"),
+      from = paste0(package_path, "header_eva_las.png"),
       to = paste0(tmp.dir, "/header_eva_las.png")
     )
   }else {
     file.copy(
-      from = here::here("tmplts", "graphic-title_bfr.png"),
+      from = paste0(package_path, "graphic-title_bfr.png"),
       to = paste0(tmp.dir, "/graphic-title_bfr.png")
     )
 
     file.copy(
-      from = here::here("tmplts", "header_eva_las.png"),
+      from = paste0(package_path, "header_eva_las.png"),
       to = paste0(tmp.dir, "/header_eva_las.png")
     )
   }
@@ -237,17 +242,19 @@ create_reports <- function(snr,
     dir.create(here::here(tmp.dir_res, "plots/p/"))
   }
 
+  syspath <- system.file(package = "ReportMaster")
+  package_path <- paste0(syspath, "/templates/")
 
   if (ubb == TRUE) {
-    file.copy(here::here("tmplts/template_ubb.Rmd"), here::here(tmp.dir_res, "plots"))
-    file.copy(here::here("tmplts/graphic_title_ubb.png"), here::here(tmp.dir_res, "plots"))
+    file.copy(paste0(package_path, "template_ubb.Rmd"), here::here(tmp.dir_res, "plots"))
+    file.copy(paste0(package_path, "graphic_title_ubb.png"), here::here(tmp.dir_res, "plots"))
     file.rename(from = here::here(tmp.dir_res, "plots/", "template_ubb.Rmd"),
                 to = here::here(tmp.dir_res, "plots/", "template.Rmd"))
   }
 
   if (ubb == FALSE) {
-    file.copy(here::here("tmplts/template_generale.Rmd"), here::here(tmp.dir_res, "plots"))
-    file.copy(here::here("tmplts/graphic-title_bfr.png"), here::here(tmp.dir_res, "plots"))
+    file.copy(paste0(package_path, "template_generale.Rmd"), here::here(tmp.dir_res, "plots"))
+    file.copy(paste0(package_path, "graphic-title_bfr.png"), here::here(tmp.dir_res, "plots"))
 
     file.rename(from = here::here(tmp.dir_res, "plots", "template_generale.Rmd"),
                 to = here::here(tmp.dir_res, "plots", "template.Rmd"))
@@ -255,7 +262,7 @@ create_reports <- function(snr,
 
 
   #for header plot
-  file.copy(here::here("tmplts/header_eva_las.png"), here::here(tmp.dir_res,"plots/p"))
+  file.copy(paste0(package_path, "header_eva_las.png"), here::here(tmp.dir_res,"plots/p"))
 
   #Get name of school
   tmp.name <- get_sname(snr)
@@ -264,19 +271,10 @@ create_reports <- function(snr,
 
 
 
-  #Results will be here:
-  #tmp.dir <- paste0("res/", snr,"_", year)
-  #assign("tmp.dir", value = tmp.dir, envir=globalenv())
-
-  #For audience here:
-  #tmp.dir_res <- paste0("res/", snr,"_", year, "/", audience)
-  #assign("tmp.dir_res", value = tmp.dir_res, envir=globalenv())
-
   #Adjust directory for UBB
   if (ubb == TRUE) {
     tmp.dir_res <- paste0("res/", snr,"_", year, "/", "ubb")
   }
-
 
   #Single steps
   tmp.session <- surveyConnectLs(user = tmp.user,
@@ -289,7 +287,6 @@ create_reports <- function(snr,
 
   #Get report package
   tmp.sids <- tmp.sids.df$sid
-  #assign("tmp.sids", value = tmp.sids, envir=globalenv())
 
   if (length(tmp.sids) == 0) {
     cli::cli_abort("Error in surveyGetSurveyIds")
@@ -303,9 +300,8 @@ create_reports <- function(snr,
 
 
   tmp.rprtpckg <- rprtpckg_list[[1]]
-  #assign("tmp.rprtpckg", value = tmp.rprtpckg, envir=globalenv())
   tmp.survey <- rprtpckg_list[[2]]
-  #assign("tmp.survey", value = tmp.survey, envir=globalenv())
+
 
   tmp.report <- rprtpckg_list[[3]]
   assign("tmp.report", value = tmp.report, envir=globalenv())
@@ -328,7 +324,6 @@ create_reports <- function(snr,
 
   #N to print in report
   tmp.n <- get_n(audience, data = tmp.sids.df)
-  #assign("tmp.n", value = tmp.n, envir=globalenv())
 
 
   #Get meta data
@@ -417,6 +412,7 @@ create_reports <- function(snr,
               d = tmp.dauer,
               results = results,
               drop = FALSE)
+
 }
 
 

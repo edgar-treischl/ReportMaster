@@ -1,5 +1,5 @@
 # #01 Load source code############################################################
-# library(OESR)
+# library(ReportMaster)
 # Sys.setenv(R_CONFIG_ACTIVE = "default")
 #
 #
@@ -7,10 +7,11 @@
 # tmp.snr <- "0001"
 # tmp.ubb <- FALSE
 # tmp.ganztag <- FALSE
-# tmp.audience <- "sus"
+# tmp.audience <- "elt"
 # tmp.stype <- "gy"
 # tmp.results <- "Eltern"
 # ############################################################################
+#
 #
 #
 # #Make a list

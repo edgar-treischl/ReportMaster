@@ -8,3 +8,6 @@
 ^config\.yml$
 ^session\.log$
 ^my_mail_creds$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

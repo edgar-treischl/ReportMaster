@@ -14,14 +14,14 @@ run_CronJob <- function() {
   snrlist <- get_snrlist(append = FALSE)
 
   #Check what comes back
-  check <- is.data.frame(snrlist)
+  check <- nrow(snrlist)
 
-  #Further Check
-  if (check == TRUE) {
-    check <- nrow(snrlist)
-  }else {
-    check <- 0
-  }
+  # #Further Check
+  # if (check == TRUE) {
+  #   check <- nrow(snrlist)
+  # }else {
+  #   check <- 0
+  # }
 
 
 
@@ -37,7 +37,9 @@ run_CronJob <- function() {
                    results = snrlist$results)
 
     #Create reports based on snr list
+    #Run linear
     #results <- purrr::pmap(mylist, purrr::safely(create_reports))
+    #Run parallel
     results <- purrr::pmap(mylist, purrr::safely(run_Parallel))
 
 
@@ -60,7 +62,6 @@ run_CronJob <- function() {
       #The mail template
       syspath <- system.file(package = "ReportMaster")
       package_path <- paste0(syspath, "/templates/")
-
       email <- blastula::render_email(paste0(package_path, "template_mail.Rmd"))
 
       #Send to:

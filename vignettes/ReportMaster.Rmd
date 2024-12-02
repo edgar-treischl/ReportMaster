@@ -19,9 +19,9 @@ knitr::opts_chunk$set(
 library(ReportMaster)
 ```
 
-The ReportMaster package is designed to create dynamic survey reports automatically. The package retrieves data from Lime Survey, combines it with meta data to create dynamic reports and runs only for surveys that are expired.
+The ReportMaster is designed to create dynamic survey reports for Lime Survey automatically. The package checks if a survey is expired, it retrieves data via the Lime Survey API, combines it with meta data to create dynamic reports. 
 
-This vignette provides a brief overview of the package and its functions. Make sure that you have a configuration file ('config.yml') in your home directory [@config]. The configuration file is necessary to connect to the Lime Survey API and the database.
+This vignette provides a brief overview of the package and its functions. Make sure that you have a configuration file ('config.yml') in your working directory [@config]. The configuration file is necessary to connect to the Lime Survey API and the database.
 
 ## ReportMaster in Action
 
@@ -46,7 +46,7 @@ run_CronJob()
 # ✔ Exported PDF file for school '0850' and group 'elt'
 ```
 
-What happens if in case of an error? The `run_CronJob` function sends an email to the OES with the error message.
+The `run_CronJob()` function sends an email to the OES in case of an error.
 
 ```{r, eval=FALSE}
 # ℹ Get parameters for: Leibniz-Gymnasium Altdorf
@@ -62,11 +62,11 @@ What happens if in case of an error? The `run_CronJob` function sends an email t
 # The email message was sent successfully.
 ```
 
-In case of an error, inspect the email. It notes which survey throw an error and it provides a code snippet to debug it.
+Inspect the email if you need to debug it. It notes which survey throw an error and it provides code to debug it.
 
 ![](email.png){width="100%"}
 
-Copy the code and use the `debugme()` function to find the error. The function runs the code linearly and returns the error message.
+Copy the code from the email and use the `debugme()` function to find the error. The function tests the code and returns the error message.
 
 ```{r, eval=FALSE}
 tmp.snr <- "0001"
@@ -91,15 +91,15 @@ debugme(tmp.snr, tmp.ubb, tmp.ganztag, tmp.audience, tmp.stype, tmp.results)
 # Check: A423W243l"
 ```
 
-## The Naked ReportMaster
+## The run_CronJob function
 
-Let's inspect the 'run_CronJob' function to get a better idea about the package.
+Let's inspect the `run_CronJob()` function to get a better idea about the package.
 
 ```{r}
 run_CronJob
 ```
 
-First, it checks whether there are new expired surveys. If there are, it returns a tibble with the school name, school type (stype), and further information that is necessary to create reports. The function also checks if these survey have a valid survey response. The function parameter `append` adds the overall report for each school and survey.
+First, it checks whether there are new expired surveys. If there are, it returns a tibble with the school name, school type (stype), and further information that is necessary to create reports. The `get_snrlist` function also checks if these survey have a valid survey response. The function parameter adds the overall report for each school and survey via `append`, since there are no overall surveys in Lime Survey.
 
 ```{r, eval=FALSE}
 snrlist <- get_snrlist(append = TRUE)
@@ -116,13 +116,14 @@ snrlist
 # 4 0850  FALSE FALSE   all      beru_fb Alle Befragtengruppen TRUE 
 ```
 
-Next, the function runs the `run_Parallel` function. This function is essentially the heart of the package. It runs the steps to create a report in parallel: First, it retrieves the data from Lime Survey via the `get_parameter()` function. Then, it creates a list of plots via the `export_plot()` function; and a list of tables via the `get_table()` function. Finally, it creates a Rmarkdown template where all plots and tables are insert and renders the report via `rmarkdown::render()` function.
+Next, the function runs the `run_Parallel()` function with `purrr` `safely`. The `run_Parallel()` function is the heart of the package. It runs the steps to create a report no matter what. The function is designed to run in parallel to speed up the process. Essentially, the function runs the `get_parameter()`, `export_plot()`, `get_table()`, and `create_report()` functions. The `get_parameter()` function retrieves the data from Lime Survey. The `export_plot()` function creates a list of plots. The `get_table()` function creates a list of tables. Finally, it creates a Rmarkdown template where all plots and tables are insert and it renders the report via `rmarkdown::render()` function. Inspect the source code for more information.
 
-After the `run_Parallel()` had done its job, the `run_CronJob()` checks if there was any errors and sends an email with the `blastula` package. Make sure that you mail credentials can be found in the root directory in a file called \`my_mail_creds\`. The blastula package will also help you to create a new one [@blastula].
+After the `run_Parallel()` had done its job, the `run_CronJob()` checks if there was any errors and sends an email with the `blastula` package. Make sure that mail credentials can be found in the root directory in a file called `my_mail_creds`. The blastula package will also help you to create a new one [@blastula].
+
 
 ## Report Master in Production
 
-The package is designed to run in a docker container. Create a new image with the following Dockerfile:
+The package is designed to run in a docker container. Here is the code of the Dockerfile that can be used to run the package.
 
 ```{bash, eval=FALSE}
 #FROM rocker/r-ver:4.4.1

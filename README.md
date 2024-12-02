@@ -7,10 +7,10 @@
 
 <!-- badges: end -->
 
-The ReportMaster package is designed to create dynamic survey reports
-automatically. The package retrieves data from Lime Survey, combines it
-with meta data to create dynamic reports and runs only for surveys that
-are expired.
+The ReportMaster is designed to create dynamic survey reports for Lime
+Survey automatically. The package checks if a survey is expired, it
+retrieves data via the Lime Survey API, combines it with meta data to
+create dynamic reports.
 
 ## Installation
 
@@ -25,7 +25,9 @@ pak::pak("edgar-treischl/ReportMaster")
 ## ReportMaster in Action
 
 The `run_CronJob()` function is the main function of the package. It
-checks for expired surveys and creates reports for them.
+checks for expired surveys, creates reports, and notifies the user via
+email in case of an error. Thus, the function is designed to be run as a
+cron job.
 
 ``` r
 library(ReportMaster)
@@ -46,6 +48,9 @@ run_CronJob()
 # ✔ Create tables [4.4s]───────────────────────────────────────────────────── 100%
 # ✔ Exported PDF file for school '0850' and group 'elt'
 ```
+
+Check out the get started vignette for more information about the
+package.
 
 ## To Be Done
 

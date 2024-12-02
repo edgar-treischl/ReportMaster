@@ -578,9 +578,11 @@ run_Parallel <- function(snr,
     unique()
 
   if (ubb) {
-    header_report <- plots_headers_ubb |> dplyr::filter(plot %in% plots_report)
+    header_report <- plots_headers_ubb
+    header_report <- header_report |> dplyr::filter(plot %in% plots_report)
   }else {
-    header_report <- plots_headers |> dplyr::filter(plot %in% plots_report)
+    header_report <- plots_headers
+    header_report <- header_report |> dplyr::filter(plot %in% plots_report)
   }
 
 

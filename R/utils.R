@@ -5,6 +5,16 @@
 # # renv::deactivate()
 #
 #
+# # Example string with ellipsis character
+# # text <- "This is an example… with an ellipsis."
+# #
+# # # Replace the ellipsis character (U+2026) with three dots
+# # reports$label <- gsub("…", "...", reports$label)
+# # reports$label_short <- gsub("…", "...", reports$label_short)
+#
+#
+# #usethis::use_data(reports, overwrite = TRUE)
+#
 #
 # library(ReportMaster)
 # Sys.setenv(R_CONFIG_ACTIVE = "default")
@@ -16,13 +26,13 @@
 # tmp.audience <- "sus"
 #
 # tmp.results <- "Lehrer"
-# tmp.stype <- "leh"
+# tmp.stype <- "gy"
 # tmp.ganztag <- FALSE
 #
 #
 # #Run###########################################################
 #
-# runParallel(
+# run_Parallel(
 #   snr = tmp.snr,
 #   audience = tmp.audience,
 #   stype = tmp.stype,

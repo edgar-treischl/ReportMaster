@@ -627,7 +627,9 @@ get_snr = function (expired) {
       dplyr::filter(new_reports == TRUE)
 
     if (nrow(new_reports) == 0) {
-      cli::cli_abort("HERE::No expired surveys found. All up to date")
+      cli::cli_alert_info("No expired surveys found. All up to date")
+      return(new_reports)
+
 
     }
 
@@ -800,9 +802,14 @@ get_snrlist <- function(drop = TRUE,
   #Get data from expired surveys
   snrlist <- try(get_snr(expired = "yesterday"), silent = TRUE)
 
-  if (is.data.frame(snrlist) == FALSE) {
+  # if (is.data.frame(snrlist) == FALSE) {
+  #   cli::cli_inform("No expired surveys found. All up to date")
+  #   return(NULL)
+  # }
+
+  if (nrow(snrlist) == 0) {
     cli::cli_inform("No expired surveys found. All up to date")
-    return(NULL)
+    return(snrlist)
   }
 
   #Check if data is available

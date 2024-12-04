@@ -67,8 +67,15 @@ get_rmd <- function(x_seq) {
     chunk2 <- paste0("```{r}\n", "plot_list[[", x, "]]\n", "```")
     chunk3 <- paste0("```{r}\n", "table_list[[", x, "]]\n", "```")
 
+    # Add vertical fill to the third chunk
+    #chunk3_vfill <- "\\vfill"
+    chunk3_vfill <- '\\vspace*{1cm}'
+
     # Add each chunk to the list
-    rmd_chunks <- c(rmd_chunks, chunk1, chunk2, chunk3)
+    rmd_chunks <- c(rmd_chunks, chunk1, chunk2, chunk3_vfill, chunk3)
+
+    # Add a LaTeX page break after each set of chunks
+    rmd_chunks <- c(rmd_chunks, "\\newpage")
   }
 
   # Combine all the chunks into a single string, separated by newlines
@@ -573,11 +580,13 @@ run_Parallel <- function(snr,
 
   cli::cli_progress_update();
   cli::cli_progress_step("Get report infos", spinner = TRUE)
-  plots_report <- reports |>
-    dplyr::filter(report == tmp.report) |>
-    dplyr::arrange(plot) |>
-    dplyr::pull(plot) |>
-    unique()
+  # plots_report <- reports |>
+  #   dplyr::filter(report == tmp.report) |>
+  #   dplyr::arrange(plot) |>
+  #   dplyr::pull(plot) |>
+  #   unique()
+
+  plots_report <- sub(".*#(.*)", "\\1", tmp.meta)
 
   if (ubb) {
     header_report <- plots_headers_ubb
@@ -587,6 +596,7 @@ run_Parallel <- function(snr,
     header_report <- header_report |> dplyr::filter(plot %in% plots_report)
   }
 
+  tmp.meta <- paste0("XX#", header_report$plot)
 
   num_cores <- parallel::detectCores()
   workers <- max(1, num_cores - 1)  #

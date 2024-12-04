@@ -23,152 +23,182 @@ export_plot = function (meta,
   tmp.rprtpckg <- tmp.var[1]
   tmp.plotid <- tmp.var[2]
 
-  #Get data
-  tmp.tab <- plotGetData(data = data,
-                         plotid = tmp.plotid,
-                         rprtpckg = tmp.rprtpckg,
-                         report = report,
-                         audience  = audience)
 
-  #Get set
-  tmp.set <- tmp.tab |>
-    dplyr::group_by(set) |>
-    dplyr::summarise(anz = dplyr::n()) |>
-    dplyr::select(set) |>
-    unlist()
+  if (tmp.plotid == "A3a") {
+    # freitext <- tmp.data |> dplyr::filter(vars == "A311ub")
+    #
+    # df <- tibble::tibble(Angabe = freitext$vals)
+    #
+    # # word_data <- df |>
+    # #   tidytext::unnest_tokens(word, txt)
+    #
+    # word_count <- df |>
+    #   dplyr::count(Angabe, sort = TRUE) |>
+    #   dplyr::mutate(angle = 90 * sample(c(0, 1), dplyr::n(),
+    #                                     replace = TRUE,
+    #                                     prob = c(60, 40)))
+    #
+    # set.seed(123)
+    # tmp.p <- ggplot2::ggplot(word_count, ggplot2::aes(label = Angabe,
+    #                                          size = n,
+    #                                          angle = angle)) +
+    #   #ggwordcloud::geom_text_wordcloud() +
+    #   ggwordcloud::geom_text_wordcloud_area(eccentricity = .32, rm_outside = FALSE) +
+    #   ggplot2::scale_size_area(max_size = 30)+
+    #   ggplot2::theme_minimal()
 
-  #Labels
-  # tmp.item.labels <- readxl::read_excel(here::here("orig/report_meta_dev.xlsx"),
-  #                                       sheet = 'sets')
+    tmp.p <- createWordCloud(data = tmp.data)
 
-  tmp.item.labels <- sets |> dplyr::filter(
+  }else {
+    #Get data
+    tmp.tab <- plotGetData(data = data,
+                           plotid = tmp.plotid,
+                           rprtpckg = tmp.rprtpckg,
+                           report = report,
+                           audience  = audience)
+
+    #Get set
+    tmp.set <- tmp.tab |>
+      dplyr::group_by(set) |>
+      dplyr::summarise(anz = dplyr::n()) |>
+      dplyr::select(set) |>
+      unlist()
+
+    #Labels
+    # tmp.item.labels <- readxl::read_excel(here::here("orig/report_meta_dev.xlsx"),
+    #                                       sheet = 'sets')
+
+    tmp.item.labels <- sets |> dplyr::filter(
       set == tmp.set
     ) |>
-    dplyr::arrange(
-      dplyr::desc(sort)
-    )
+      dplyr::arrange(
+        dplyr::desc(sort)
+      )
 
 
-  data <- tmp.tab
+    data <- tmp.tab
 
 
-  tmp.var_plot <- length(unique(data$vars))
+    tmp.var_plot <- length(unique(data$vars))
 
 
-  #Manual adjustments for filter questions
-  #filterlist <- c("W2a", "W2leh", "w2use", "w33a")
-  #filterlist <- get_filtervars()
+    #Manual adjustments for filter questions
+    #filterlist <- c("W2a", "W2leh", "w2use", "w33a")
+    #filterlist <- get_filtervars()
 
-  data <- data |> dplyr::filter(vals != "k. A.")
+    data <- data |> dplyr::filter(vals != "k. A.")
 
-  # if ((tmp.plotid %in% filterlist) == TRUE) {
-  #   #data <- data |> dplyr::filter(vals != "k. A.")
-  #   data <- data |> dplyr::filter(vals != " ")
-  # }
+    # if ((tmp.plotid %in% filterlist) == TRUE) {
+    #   #data <- data |> dplyr::filter(vals != "k. A.")
+    #   data <- data |> dplyr::filter(vals != " ")
+    # }
 
-  # if (tmp.plotid == "A3b" & ubb == TRUE) {
-  #   data <- data |> dplyr::filter(vals != "NA")
-  # }
-  #
-  # if (tmp.plotid == "W2b" & ubb == TRUE) {
-  #   data <- tidyr::drop_na(data)
-  # }
+    # if (tmp.plotid == "A3b" & ubb == TRUE) {
+    #   data <- data |> dplyr::filter(vals != "NA")
+    # }
+    #
+    # if (tmp.plotid == "W2b" & ubb == TRUE) {
+    #   data <- tidyr::drop_na(data)
+    # }
 
 
-  #data$txtlabel <- paste0(data$label_n, "\n (n: ", data$anz, ")")
+    #data$txtlabel <- paste0(data$label_n, "\n (n: ", data$anz, ")")
 
-  las_theme <- ggplot2::theme(
-    #axis.title.x = ggplot2::element_blank(),
-    legend.position = "none",
-    axis.text.x = ggplot2::element_text(size = 11),
-    axis.title.y = ggplot2::element_blank(),
-    axis.text.y = ggplot2::element_text(size = 12),
-    plot.margin = ggplot2::margin(t = 10,  # Top margin
-                                  r = 0,  # Right margin
-                                  b = 10,  # Bottom margin
-                                  l = 0)) # Left margin
+    las_theme <- ggplot2::theme(
+      #axis.title.x = ggplot2::element_blank(),
+      legend.position = "none",
+      axis.text.x = ggplot2::element_text(size = 11),
+      axis.title.y = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_text(size = 12),
+      plot.margin = ggplot2::margin(t = 10,  # Top margin
+                                    r = 0,  # Right margin
+                                    b = 10,  # Bottom margin
+                                    l = 0)) # Left margin
 
-  #Plots for UBB (absolute values) vs. survey (relative values) label_n
-  if (ubb == FALSE) {
-    data$newlable <- paste0(data$vars, ": ", data$label_short)
-    data$newlable <- as.factor(data$newlable)
+    #Plots for UBB (absolute values) vs. survey (relative values) label_n
+    if (ubb == FALSE) {
+      data$newlable <- paste0(data$vars, ": ", data$label_short)
+      data$newlable <- as.factor(data$newlable)
 
-    tmp.p <- ggplot2::ggplot(data, ggplot2::aes(fill = vals, y = p, x = newlable)) +
-      ggplot2::geom_bar(
-        stat = 'identity',
-        position = ggplot2::position_stack(),
-        width = 0.5
-      ) +
-      ggplot2::geom_label(
-        ggplot2::aes(label = label_n, group = factor(vals)),
-        position = ggplot2::position_stack(vjust = 0.5),
-        size = 2.8,
-        fill = "white",
-        colour = "black"
-      ) +
-      ggplot2::scale_fill_manual(
-        breaks = rev(tmp.item.labels$labels),
-        values = rev(tmp.item.labels$colors),
-        drop = TRUE
-      ) +
-      ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(n.dodge = 1),
-                                labels = function(x)
-                                  stringr::str_wrap(x, width = 40),
-                                limits = rev(levels(data$newlable))) +
-      ggplot2::coord_flip() +
-      ggplot2::theme_minimal(base_size = 12) +
-      ggplot2::theme(
-        legend.position = "bottom",
-        axis.text = ggplot2::element_text(size = 10),
-        #legend.text = ggplot2::element_text(size=8),
-        axis.text.y = ggplot2::element_text(hjust = 0)
-      ) +
-      ggplot2::labs(x = '', y = 'Prozent', fill = "") +
-      ggplot2::guides(fill  =  ggplot2::guide_legend(nrow = 2))+
-      las_theme
+      tmp.p <- ggplot2::ggplot(data, ggplot2::aes(fill = vals, y = p, x = newlable)) +
+        ggplot2::geom_bar(
+          stat = 'identity',
+          position = ggplot2::position_stack(),
+          width = 0.5
+        ) +
+        ggplot2::geom_label(
+          ggplot2::aes(label = label_n, group = factor(vals)),
+          position = ggplot2::position_stack(vjust = 0.5),
+          size = 2.8,
+          fill = "white",
+          colour = "black"
+        ) +
+        ggplot2::scale_fill_manual(
+          breaks = rev(tmp.item.labels$labels),
+          values = rev(tmp.item.labels$colors),
+          drop = TRUE
+        ) +
+        ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(n.dodge = 1),
+                                  labels = function(x)
+                                    stringr::str_wrap(x, width = 40),
+                                  limits = rev(levels(data$newlable))) +
+        ggplot2::coord_flip() +
+        ggplot2::theme_minimal(base_size = 12) +
+        ggplot2::theme(
+          legend.position = "bottom",
+          axis.text = ggplot2::element_text(size = 10),
+          #legend.text = ggplot2::element_text(size=8),
+          axis.text.y = ggplot2::element_text(hjust = 0)
+        ) +
+        ggplot2::labs(x = '', y = 'Prozent', fill = "") +
+        ggplot2::guides(fill  =  ggplot2::guide_legend(nrow = 2))+
+        las_theme
 
+    }
+
+    if (ubb == TRUE) {
+      data$newlable <- data$label_short
+      data$newlable <- as.factor(data$newlable)
+
+      tmp.p <- ggplot2::ggplot(data, ggplot2::aes(fill = vals, y = anz, x =
+                                                    newlable)) +
+        ggplot2::geom_bar(
+          stat = 'identity',
+          position = ggplot2::position_stack(),
+          width = 0.5
+        ) +
+        ggplot2::geom_label(
+          ggplot2::aes(label = as.character(anz), group = factor(vals)),
+          position = ggplot2::position_stack(vjust = 0.5),
+          size = 2.8,
+          fill = "white",
+          colour = "black"
+        )+
+        ggplot2::scale_fill_manual(
+          breaks = rev(tmp.item.labels$labels),
+          values = rev(tmp.item.labels$colors),
+          drop = TRUE
+        ) +
+        ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(n.dodge = 1),
+                                  labels = function(x)
+                                    stringr::str_wrap(x, width = 40),
+                                  limits = rev(levels(data$newlable))) +
+        ggplot2::scale_y_continuous(breaks = scales::pretty_breaks())+
+        ggplot2::coord_flip() +
+        ggplot2::theme_minimal(base_size = 12) +
+        ggplot2::theme(
+          legend.position = "bottom",
+          axis.text = ggplot2::element_text(size = 11),
+          #legend.text = ggplot2::element_text(size=8),
+          axis.text.y = ggplot2::element_text(hjust = 0)
+        ) +
+        ggplot2::labs(x = '', y = 'Anzahl', fill = "")+
+        las_theme
+
+    }
   }
 
-  if (ubb == TRUE) {
-    data$newlable <- data$label_short
-    data$newlable <- as.factor(data$newlable)
 
-    tmp.p <- ggplot2::ggplot(data, ggplot2::aes(fill = vals, y = anz, x =
-                                                  newlable)) +
-      ggplot2::geom_bar(
-        stat = 'identity',
-        position = ggplot2::position_stack(),
-        width = 0.5
-      ) +
-      ggplot2::geom_label(
-        ggplot2::aes(label = as.character(anz), group = factor(vals)),
-        position = ggplot2::position_stack(vjust = 0.5),
-        size = 2.8,
-        fill = "white",
-        colour = "black"
-      )+
-      ggplot2::scale_fill_manual(
-        breaks = rev(tmp.item.labels$labels),
-        values = rev(tmp.item.labels$colors),
-        drop = TRUE
-      ) +
-      ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(n.dodge = 1),
-                                labels = function(x)
-                                  stringr::str_wrap(x, width = 40),
-                                limits = rev(levels(data$newlable))) +
-      ggplot2::scale_y_continuous(breaks = scales::pretty_breaks())+
-      ggplot2::coord_flip() +
-      ggplot2::theme_minimal(base_size = 12) +
-      ggplot2::theme(
-        legend.position = "bottom",
-        axis.text = ggplot2::element_text(size = 11),
-        #legend.text = ggplot2::element_text(size=8),
-        axis.text.y = ggplot2::element_text(hjust = 0)
-      ) +
-      ggplot2::labs(x = '', y = 'Anzahl', fill = "")+
-      las_theme
-
-  }
 
   #height_plot <- (148/4)*tmp.var_plot
 
@@ -255,4 +285,40 @@ create_allplots2 = function (meta,
   }
 
 }
+
+
+#' Export a plot
+#'
+#' @description Function creates and export a plot.
+#' @param data Meta data
+#' @param export Export
+#' @export
+
+createWordCloud <- function(data) {
+  freitext <- data |> dplyr::filter(vars == "A311ub")
+
+  df <- tibble::tibble(Angabe = freitext$vals)
+
+  # word_data <- df |>
+  #   tidytext::unnest_tokens(word, txt)
+
+  word_count <- df |>
+    dplyr::count(Angabe, sort = TRUE) |>
+    dplyr::mutate(angle = 90 * sample(c(0, 1), dplyr::n(),
+                                      replace = TRUE,
+                                      prob = c(60, 40)))
+
+  set.seed(123)
+  tmp.p <- ggplot2::ggplot(word_count, ggplot2::aes(label = Angabe,
+                                                    size = n,
+                                                    angle = angle)) +
+    #ggwordcloud::geom_text_wordcloud() +
+    ggwordcloud::geom_text_wordcloud_area(eccentricity = .32, rm_outside = FALSE) +
+    ggplot2::scale_size_area(max_size = 30)+
+    ggplot2::theme_minimal()
+
+  return(tmp.p)
+}
+
+
 

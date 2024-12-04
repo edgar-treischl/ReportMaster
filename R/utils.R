@@ -41,3 +41,46 @@
 #
 #
 #
+# get_parameter(snr = tmp.snr,
+#               audience = tmp.audience,
+#               ubb = tmp.ubb,
+#               ganztag = tmp.ganztag,
+#               stype = tmp.stype)
+#
+#
+#
+# export_plot(meta = tmp.meta[8],
+#             snr = tmp.snr,
+#             audience = tmp.audience,
+#             report = tmp.report,
+#             ubb = tmp.ubb,
+#             data = tmp.data,
+#             export = FALSE)
+#
+#
+# tmp.freitext
+#
+# freitext <- tmp.data |> dplyr::filter(vars == "A311ub")
+#
+# df <- tibble::tibble(txt = freitext$vals)
+#
+# # word_data <- df |>
+# #   tidytext::unnest_tokens(word, txt)
+#
+# word_count <- df |>
+#   dplyr::count(txt, sort = TRUE)
+#
+#
+#
+# set.seed(123)
+# ggplot2::ggplot(word_count, ggplot2::aes(label = txt, size = n)) +
+#   ggwordcloud::geom_text_wordcloud() +
+#   ggplot2::scale_size_area(max_size = 14)+
+#   ggplot2::theme_void()
+#
+#
+#
+#
+#
+#
+#

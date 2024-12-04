@@ -1082,11 +1082,11 @@ get_parameter <- function (snr,
   #Further adjustments for UBB
   if (ubb == TRUE) {
     tmp.meta <- unique(tmp.meta)
-    drop_meta1 <- stringr::str_which(tmp.meta, "\\#NA")
+    drop_meta <- stringr::str_which(tmp.meta, "\\#NA")
     #Freitext del?
-    drop_meta2 <- stringr::str_which(tmp.meta, "\\#A3a")
+    #drop_meta2 <- stringr::str_which(tmp.meta, "\\#A3a")
 
-    drop_meta <- c(drop_meta1, drop_meta2)
+    #drop_meta <- c(drop_meta1, drop_meta2)
     #tmp.meta <- as.vector(tmp.meta$plotdata)
     tmp.meta <- tmp.meta[-c(drop_meta)]
 

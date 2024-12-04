@@ -1,3 +1,8 @@
+# Update and install system dependencies
+#RUN apt-get update && apt-get install -y \
+#    fonts-noto \
+#    && rm -rf /var/lib/apt/lists/*  # Clean up unnecessary files
+
 #FROM rocker/r-ver:4.4.1
 FROM rocker/verse:4.4.1
 
@@ -5,12 +10,12 @@ FROM rocker/verse:4.4.1
 RUN echo "de_DE.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen de_DE.UTF-8 && \
     update-locale LANG=de_DE.UTF-8
-    
+
 
 
 # Install R packages that are needed even before running renv::restore()
 RUN  R -e "install.packages('renv', repos='https://cloud.r-project.org')"
-   
+
 
 # Install TinyTeX
 
@@ -18,7 +23,7 @@ RUN  R -e "install.packages('renv', repos='https://cloud.r-project.org')"
 RUN tlmgr option repository ctan
 #RUN R -e "tinytex::tlmgr_install(c('pdflscape', 'environ', 'fp', 'pgf', 'tcolorbox', 'trimspaces'))"
 RUN R -e "tinytex::tlmgr_update()"
-RUN tlmgr option autobackup 0 
+RUN tlmgr option autobackup 0
 
 # Set the working directory
 WORKDIR /app
@@ -28,7 +33,7 @@ COPY . .
 
 # Run renv::restore() to restore R package dependencies
 RUN R -e "renv::restore()"
-RUN R -e "install.packages('svglite', repos='https://cloud.r-project.org')" 
+RUN R -e "install.packages('svglite', repos='https://cloud.r-project.org')"
 
 # Set the environment variable for locale and TinyTeX path
 ENV LANG=en_US.UTF-8

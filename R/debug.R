@@ -7,12 +7,12 @@
 # tmp.snr <- "0001"
 # tmp.ubb <- FALSE
 # tmp.ganztag <- FALSE
-# tmp.audience <- "leh"
+# tmp.audience <- "sus"
 # tmp.stype <- "gy"
-# tmp.results <- "Eltern"
+# tmp.results <- "SuS"
 #
 # debugme(tmp.snr, tmp.ubb, tmp.ganztag, tmp.audience, tmp.stype, tmp.results)
-#
+
 # ############################################################################
 
 #' Debug the Code

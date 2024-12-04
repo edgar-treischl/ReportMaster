@@ -166,22 +166,23 @@ create_directories <- function (snr, audience, ubb) {
       from = paste0(package_path, "graphic_title_ubb.png"),
       to = paste0(tmp.dir, "/graphic_title_ubb.png")
     )
-
-    file.copy(
-      from = paste0(package_path, "header_eva_las.png"),
-      to = paste0(tmp.dir, "/header_eva_las.png")
-    )
   }else {
     file.copy(
       from = paste0(package_path, "graphic-title_bfr.png"),
       to = paste0(tmp.dir, "/graphic-title_bfr.png")
     )
 
-    file.copy(
-      from = paste0(package_path, "header_eva_las.png"),
-      to = paste0(tmp.dir, "/header_eva_las.png")
-    )
   }
+
+  file.copy(
+    from = paste0(package_path, "header_eva_las.png"),
+    to = paste0(tmp.dir, "/header_eva_las.png")
+  )
+
+  file.copy(
+    from = paste0(package_path, "NotoSans-Regular.ttf"),
+    to = paste0(tmp.dir, "/NotoSans-Regular.ttf")
+  )
 
 
 }
@@ -265,6 +266,7 @@ create_report <- function(snr,
 
   #for header plot
   file.copy(paste0(package_path, "header_eva_las.png"), here::here(tmp.dir_res,"plots/p"))
+  file.copy(paste0(package_path, "NotoSans-Regular.ttf"), here::here(tmp.dir_res,"plots"))
 
   #Get name of school
   tmp.name <- get_sname(snr)

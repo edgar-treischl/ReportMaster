@@ -1,12 +1,16 @@
 ---
-title: "![](header_eva_las.png){width=14cm}"
+title: ""
 geometry: left=2cm,right=2cm,top=2cm,bottom=2cm
 output:
   pdf_document:
     latex_engine: xelatex
+    keep_tex: false
   html_document:
     df_print: paged
-header-includes: \renewcommand{\familydefault}{\sfdefault}
+header-includes:
+  - \usepackage{fontspec}
+  - \setmainfont{NotoSans-Regular.ttf}
+  - \setlength{\parindent}{0pt}
 lang: de-DE
 params:
   snr: "6009"
@@ -16,7 +20,6 @@ params:
   d: "0"
 ---
 
-
 ```{r, include=FALSE}
 library(ReportMaster)
 Sys.setenv(R_CONFIG_ACTIVE = "default")
@@ -25,40 +28,51 @@ knitr::opts_chunk$set(echo = FALSE)
 
 flextable::set_flextable_defaults(fonts_ignore=TRUE)
 
+library(showtext)
+
+font_add("Noto Sans", "NotoSans-Regular.ttf")
+showtext_auto()
+
+
+```
+
+
+```{=tex}
+\begin{figure}[h!]
+\raggedleft
+\includegraphics[width=0.55\textwidth]{header_eva_las.png}
+\vspace{10mm}
+\end{figure}
+\begin{center}
+\section*{\Huge Ergebnisse aus der Befragung\newline zur Externen Evaluation} 
+\end{center}
+\vspace{10mm}  % Optional additional space
 ```
 
 
 
-# Ergebnisse aus der Befragung zur Externen Evaluation
+![](graphic-title_bfr.png){width="90%"}
 
-## `r params$name` (`r params$snr`)
+## \LARGE `r params$name` (`r params$snr`)
 
+\Large - Ergebnisauswertung: `r params$fb`
 
- - Ergebnisauswertung: `r params$fb`
- - Gültige Bewertungen: `r params$n`
- - Evaluationsjahr: `r format(Sys.Date(), "%Y")`
+\Large - Gültige Bewertungen: `r params$n`
 
-
-![](graphic-title_bfr.png)
+\Large - Evaluationsjahr: `r format(Sys.Date(), "%Y")`
 
 \newpage
 
-
 ## Hinweise zum besseren Verständnis der Darstellungen
 
-1. Die Überschriften zeigen die Zuordnung der Befragungsergebnisse zu den Kriterien und Anforderungen des bayerischen Qualitätstableaus. Für jede Qualitätsanforderung wird in einem Diagramm und in einer Tabelle dargestellt, inwiefern die Befragten den Aussagen im Fragebogen (Items) zugestimmt haben.
+1.  Die Überschriften zeigen die Zuordnung der Befragungsergebnisse zu den Kriterien und Anforderungen des bayerischen Qualitätstableaus. Für jede Qualitätsanforderung wird in einem Diagramm und in einer Tabelle dargestellt, inwiefern die Befragten den Aussagen im Fragebogen (Items) zugestimmt haben.
 
-2. Die Balken in den Diagrammen zeigen, wie sich die Antworten der Befragten zu den Items über die verschiedenen Antwortkategorien verteilen. Die Farblegende findet sich in der darunterliegenden Tabelle in der Kopfzeile.
+2.  Die Balken in den Diagrammen zeigen, wie sich die Antworten der Befragten zu den Items über die verschiedenen Antwortkategorien verteilen. Die Farblegende findet sich in der darunterliegenden Tabelle in der Kopfzeile.
 
-3. In den Balken ist für jede Antwortkategorie der prozentuale Anteil der Personen angegeben, die sich für diese Antwort entschieden haben. In den Tabellen finden Sie zusätzlich die absolute Anzahl der Befragten, die eine bestimmte Antwortkategorie gewählt haben.
+3.  In den Balken ist für jede Antwortkategorie der prozentuale Anteil der Personen angegeben, die sich für diese Antwort entschieden haben. In den Tabellen finden Sie zusätzlich die absolute Anzahl der Befragten, die eine bestimmte Antwortkategorie gewählt haben.
 
-4. Neben jedem Balken und in den Zeilen der Tabelle steht eine Kurzform der Fragebogenitems. Aus dem Kürzel in den Klammern geht die Personengruppe hervor, die das jeweilige Item eingeschätzt hat: (elt) für Eltern, (sus) für Schülerinnen und Schüler, (leh) für Lehrkräfte) und (aus) für Ausbildungspartner.
+4.  Neben jedem Balken und in den Zeilen der Tabelle steht eine Kurzform der Fragebogenitems. Aus dem Kürzel in den Klammern geht die Personengruppe hervor, die das jeweilige Item eingeschätzt hat: (elt) für Eltern, (sus) für Schülerinnen und Schüler, (leh) für Lehrkräfte) und (aus) für Ausbildungspartner.
 
-5. Weisen die einer bestimmten Qualitätsanforderung zugehörigen Fragebogenitems durchgängig hohe Zustimmungswerte auf, wird die Anforderung durch die Befragungsergebnisse gestützt.
-
-
-
-
+5.  Weisen die einer bestimmten Qualitätsanforderung zugehörigen Fragebogenitems durchgängig hohe Zustimmungswerte auf, wird die Anforderung durch die Befragungsergebnisse gestützt.
 
 \pagebreak
-

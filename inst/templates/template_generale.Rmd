@@ -1,12 +1,14 @@
 ---
-title: "![](p/header_eva_las.png){width=14cm}"
+title: ""
 geometry: left=2cm,right=2cm,top=2cm,bottom=2cm
 output:
-  pdf_document: default
-  html_document:
-    df_print: paged
-header-includes: \usepackage[utf8]{inputenc} \usepackage{helvet} \usepackage{pdflscape} \usepackage{xcolor} \usepackage{tcolorbox}
-  \renewcommand{\familydefault}{\sfdefault}
+  pdf_document: 
+    latex_engine: xelatex
+    keep_tex: false
+header-includes:
+  - \usepackage{fontspec}
+  - \setmainfont{NotoSans-Regular.ttf}
+  - \setlength{\parindent}{0pt}
 lang: de-DE
 params:
   snr: 9999
@@ -19,28 +21,50 @@ params:
 
 
 ```{r, include=FALSE}
-source(here::here("R/source.R"), encoding = "UTF-8")
+library(ReportMaster)
+Sys.setenv(R_CONFIG_ACTIVE = "default")
 
+knitr::opts_chunk$set(echo = FALSE)
+
+flextable::set_flextable_defaults(fonts_ignore=TRUE)
+
+library(showtext)
+
+font_add("Noto Sans", "NotoSans-Regular.ttf")
+showtext_auto()
 
 headers_df <- export_headers(tmp.meta, 
                              ubb = ubb)
 
-headers_df
+
 ```
 
+```{=tex}
+\begin{figure}[h!]
+\raggedleft
+\includegraphics[width=0.55\textwidth]{p/header_eva_las.png}
+\vspace{10mm}
+\end{figure}
+\begin{center}
+\section*{\Huge Ergebnisse aus der Befragung\newline zur Externen Evaluation} 
+\end{center}
+\vspace{10mm}  % Optional additional space
+```
+
+![](graphic-title_bfr.png){width="90%"}
 
 
-# Ergebnisse aus der Befragung zur Externen Evaluation
 
-## `r params$name` (`r params$snr`)
-
-
- - Ergebnisauswertung: `r params$fb`
- - Gültige Bewertungen: `r params$n`
- - Evaluationsjahr: `r params$t`
+## \LARGE `r params$name` (`r params$snr`)
 
 
-![](graphic-title_bfr.png)
+\Large - Ergebnisauswertung: `r params$fb`
+
+\Large - Gültige Bewertungen: `r params$n`
+
+\Large - Evaluationsjahr: `r params$t`
+
+
 
 \newpage
 

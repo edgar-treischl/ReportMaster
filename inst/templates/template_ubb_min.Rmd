@@ -1,11 +1,14 @@
 ---
-title: "![](header_eva_las.png){width=14cm}"
+title: ""
 geometry: left=2cm,right=2cm,top=2cm,bottom=2cm
 output:
-  pdf_document: default
-  html_document:
-    df_print: paged
-header-includes: \renewcommand{\familydefault}{\sfdefault}
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: false
+header-includes:
+  - \usepackage{fontspec}
+  - \setmainfont{NotoSans-Regular.ttf}
+  - \setlength{\parindent}{0pt}
 lang: de-DE
 params:
   snr: 9999
@@ -23,18 +26,40 @@ knitr::opts_chunk$set(echo = FALSE)
 
 flextable::set_flextable_defaults(fonts_ignore=TRUE)
 
+library(showtext)
+
+font_add("Noto Sans", "NotoSans-Regular.ttf")
+showtext_auto()
+
+
 
 ```
 
-# Rückmeldung der Ergebnisse aus der Unterrichtsbeobachtung
 
-## `r params$name` (`r params$snr`)
+```{=tex}
+\begin{figure}[h!]
+\raggedleft
+\includegraphics[width=0.55\textwidth]{header_eva_las.png}
+\vspace{10mm}
+\end{figure}
+\begin{center}
+\section*{\Huge Rückmeldung der Ergebnisse aus \newline der Unterrichtsbeobachtung} 
+\end{center}
+\vspace{10mm}  % Optional additional space
+```
+
+
+![](graphic_title_ubb.png){width="90%"}
+
+## \LARGE `r params$name` (`r params$snr`)
 
 -   Anzahl der Beobachtungen: `r params$n`
+
 -   Beobachtungszeitpunkt: `r format(Sys.Date(), "%Y")`
+
 -   Dauer der Beobachtung: `r params$d`
 
-![](graphic_title_ubb.png)
+
 
 \newpage
 

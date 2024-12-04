@@ -55,11 +55,11 @@ showtext_auto()
 
 ## \LARGE `r params$name` (`r params$snr`)
 
-\Large - Ergebnisauswertung: `r params$fb`
+- Ergebnisauswertung: `r params$fb`
 
-\Large - Gültige Bewertungen: `r params$n`
+- Gültige Bewertungen: `r params$n`
 
-\Large - Evaluationsjahr: `r format(Sys.Date(), "%Y")`
+- Evaluationsjahr: `r format(Sys.Date(), "%Y")`
 
 \newpage
 

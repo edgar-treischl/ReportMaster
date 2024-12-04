@@ -1,7 +1,7 @@
 
-# if (file.exists("config.yml") == "FALSE") {
-#   testthat::skip("Skipping tests due to NO_TESTS environment variable")
-# }
+if (file.exists("config.yml") == "FALSE") {
+  testthat::skip("Skipping tests due to NO_TESTS environment variable")
+}
 
 
 test_that("get_sname() works", {

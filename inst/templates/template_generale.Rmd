@@ -4,7 +4,7 @@ geometry: left=2cm,right=2cm,top=2cm,bottom=2cm
 output:
   pdf_document: 
     latex_engine: xelatex
-    keep_tex: false
+    keep_tex: true
 header-includes:
   - \usepackage{fontspec}
   - \setmainfont{NotoSans-Regular.ttf}
@@ -58,11 +58,11 @@ headers_df <- export_headers(tmp.meta,
 ## \LARGE `r params$name` (`r params$snr`)
 
 
-\Large - Ergebnisauswertung: `r params$fb`
+- Ergebnisauswertung: `r params$fb`
 
-\Large - Gültige Bewertungen: `r params$n`
+- Gültige Bewertungen: `r params$n`
 
-\Large - Evaluationsjahr: `r params$t`
+- Evaluationsjahr: `r params$t`
 
 
 

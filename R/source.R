@@ -1107,6 +1107,8 @@ get_parameter <- function (snr,
 
       if (tmp.dauer == "2") {
         tmp.dauer <- "45 Minuten"
+        exclude_pattern <- "#Zeit"
+        tmp.meta <- tmp.meta[!grepl(exclude_pattern, tmp.meta)]
       }
     }
 

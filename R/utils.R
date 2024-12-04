@@ -21,15 +21,13 @@
 #
 # #Parameters######################################################
 # tmp.snr <- "0001"
-# tmp.ubb <- FALSE
+# tmp.ubb <- TRUE
 # #Report for: audience == sus, leh, elt, all, ubb, aus
-# tmp.audience <- "sus"
+# tmp.audience <- "ubb"
 #
-# tmp.results <- "Lehrer"
+# tmp.results <- "ubb"
 # tmp.stype <- "gy"
 # tmp.ganztag <- FALSE
-#
-#
 # #Run###########################################################
 #
 # run_Parallel(

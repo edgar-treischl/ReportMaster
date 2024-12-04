@@ -3,13 +3,13 @@
 # Sys.setenv(R_CONFIG_ACTIVE = "default")
 #
 #
-# #Provide buggers##############################################################
+#Provide buggers##############################################################
 # tmp.snr <- "0001"
-# tmp.ubb <- FALSE
+# tmp.ubb <- TRUE
 # tmp.ganztag <- FALSE
-# tmp.audience <- "sus"
+# tmp.audience <- "ubb"
 # tmp.stype <- "gy"
-# tmp.results <- "SuS"
+# tmp.results <- "ubb"
 #
 # debugme(tmp.snr, tmp.ubb, tmp.ganztag, tmp.audience, tmp.stype, tmp.results)
 

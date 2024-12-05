@@ -25,27 +25,8 @@ get_table = function (meta,
   tmp.plotid <- tmp.var[2]
 
   if (tmp.plotid == "A3a") {
-    freitext <- tmp.data |> dplyr::filter(vars == "A311ub")
-
-    df <- tibble::tibble(Angabe = freitext$vals)
-
-    # word_data <- df |>
-    #   tidytext::unnest_tokens(word, txt)
-
-    word_count <- df |>
-      dplyr::count(Angabe, sort = TRUE)
-
-    ft <- flextable::flextable(word_count) |>
-      flextable::line_spacing(space = 1.25, part = "body") |>
-      flextable::width(j=1, 10, unit="cm") |>
-      flextable::width(j=2, 2, unit="cm")
+    ft <- TableWorldCloud(data = tmp.data)
   }else {
-    #Get data
-    # data <- plotGetData(.GlobalEnv$tmp.data,
-    #                        plotid = tmp.plotid,
-    #                        rprtpckg = tmp.rprtpckg,
-    #                        audience  = audience)
-
     #.GlobalEnv$tmp.data
     data <- plotGetData(data = data,
                         plotid = tmp.plotid,
@@ -131,9 +112,13 @@ get_table = function (meta,
 
 
 
+
     #Remove label
     dftable <- dftable |>
       dplyr::select(-label)
+
+    # dftable <- dftable |>
+    #   dplyr::mutate(variable = stringr::str_wrap(variable, width = 50))
 
     if (ubb == FALSE) {
       #Create flextable depending on length of columns:
@@ -286,7 +271,7 @@ get_table = function (meta,
       if (lenght_colorscheme == 1) {
         #1
         ft <- table_min |>
-          flextable::width(j = 1, 13, unit="cm") |>
+          flextable::width(j = 1, 14, unit="cm") |>
           flextable::width(j=2:(ncol(dftable)), 2, unit="cm") |>
           flextable::color(j=c(1:2), color=txtcolorscheme, part="header") |>
           flextable::bg(j=2, bg=colorscheme[1], part ="header")
@@ -295,7 +280,7 @@ get_table = function (meta,
       if (lenght_colorscheme == 2) {
         #2
         ft <- table_min |>
-          flextable::width(j = 1, 11, unit="cm") |>
+          flextable::width(j = 1, 12, unit="cm") |>
           flextable::width(j=2:(ncol(dftable)), 2, unit="cm") |>
           flextable::color(j=c(1:3), color=txtcolorscheme, part="header") |>
           flextable::bg(j=2, bg=colorscheme[1], part ="header") |>
@@ -305,7 +290,7 @@ get_table = function (meta,
       if (lenght_colorscheme == 3) {
         #3
         ft <- table_min |>
-          flextable::width(j = 1, 9, unit="cm") |>
+          flextable::width(j = 1, 10, unit="cm") |>
           flextable::width(j=2:(ncol(dftable)), 2, unit="cm") |>
           flextable::color(j=c(1:4), color=txtcolorscheme, part="header") |>
           flextable::bg(j=2, bg=colorscheme[1], part ="header") |>
@@ -316,7 +301,7 @@ get_table = function (meta,
       if (lenght_colorscheme == 4) {
         ft <- table_min |>
           flextable::width(j = 1, 7, unit="cm") |>
-          flextable::width(j=2:(ncol(dftable)), 2, unit="cm") |>
+          flextable::width(j=2:(ncol(dftable)), 3, unit="cm") |>
           flextable::color(j=c(1:5), color=txtcolorscheme, part="header") |>
           flextable::bg(j=2, bg=colorscheme[1], part ="header") |>
           flextable::bg(j=3, bg=colorscheme[2], part ="header") |>
@@ -352,6 +337,13 @@ get_table = function (meta,
     usethis::ui_done("Export table: {usethis::ui_value(tmp.plotid)}")
 
   }else {
+    #ft <- ft |> flextable::set_table_properties(width = col_widths1, layout = "autofit")
+    # ft <- ft |>
+    #   #flextable::autofit() |>
+    #   flextable::width(width = 1) |>
+    #   flextable::compose(j = "variable", value = flextable::as_paragraph(flextable::as_chunk(variable))) |>
+    #   flextable::fit_to_width(max_width = 6)
+
     return(ft)
   }
 
@@ -409,3 +401,32 @@ export_tables = function (meta,
   unlink(mysvgs_paths)
 
 }
+
+#' Table for the Word Cloud
+#'
+#' @description Get a table for the Word Cloud Text
+#' @param data Data
+#' @return A flextable table
+#' @export
+
+
+TableWorldCloud <- function(data) {
+  freitext <- data |> dplyr::filter(vars == "A311ub")
+
+  df <- tibble::tibble(Angabe = freitext$vals)
+
+  # word_data <- df |>
+  #   tidytext::unnest_tokens(word, txt)
+
+  word_count <- df |>
+    dplyr::count(Angabe, sort = TRUE)
+
+  ft <- flextable::flextable(word_count) |>
+    flextable::line_spacing(space = 1.25, part = "body") |>
+    flextable::width(j=1, 13, unit="cm") |>
+    flextable::width(j=2, 2, unit="cm")
+
+  return(ft)
+}
+
+

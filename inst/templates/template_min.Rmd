@@ -24,15 +24,14 @@ params:
 library(ReportMaster)
 Sys.setenv(R_CONFIG_ACTIVE = "default")
 
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE)
 
 flextable::set_flextable_defaults(fonts_ignore=TRUE)
-
-library(showtext)
-
-font_add("Noto Sans", "NotoSans-Regular.ttf")
-showtext_auto()
-
+sysfonts::font_add("Gloria Hallelujah", "GloriaHallelujah-Regular.ttf")
+sysfonts::font_add("Noto Sans", "NotoSans-Regular.ttf")
+showtext::showtext_auto()
 
 ```
 
@@ -65,6 +64,8 @@ showtext_auto()
 
 ## Hinweise zum besseren Verständnis der Darstellungen
 
+\linespread{1.5} 
+
 1.  Die Überschriften zeigen die Zuordnung der Befragungsergebnisse zu den Kriterien und Anforderungen des bayerischen Qualitätstableaus. Für jede Qualitätsanforderung wird in einem Diagramm und in einer Tabelle dargestellt, inwiefern die Befragten den Aussagen im Fragebogen (Items) zugestimmt haben.
 
 2.  Die Balken in den Diagrammen zeigen, wie sich die Antworten der Befragten zu den Items über die verschiedenen Antwortkategorien verteilen. Die Farblegende findet sich in der darunterliegenden Tabelle in der Kopfzeile.
@@ -76,3 +77,7 @@ showtext_auto()
 5.  Weisen die einer bestimmten Qualitätsanforderung zugehörigen Fragebogenitems durchgängig hohe Zustimmungswerte auf, wird die Anforderung durch die Befragungsergebnisse gestützt.
 
 \pagebreak
+
+
+
+

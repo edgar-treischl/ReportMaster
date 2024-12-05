@@ -86,6 +86,97 @@ get_rmd <- function(x_seq) {
 }
 
 
+#' Get Rmd Code for the Report
+#' @description Depending on the number of plots and tables, the function
+#'  creates the Rmd chunks for the report
+#' @param x_seq Sequence
+#' @return Character
+#' @export
+
+get_rmd3 <- function(meta, num_bars) {
+
+  # # Step 1: Define the helper functions to get the sets and bar counts
+  # get_set <- function(reportplot) {
+  #   oneset <- function(reportplot) {
+  #     reports |>
+  #       dplyr::filter(report == tmp.report) |>
+  #       dplyr::filter(plot == reportplot) |>
+  #       dplyr::pull(sets) |>
+  #       unique()
+  #   }
+  #
+  #   sets <- lapply(reportplot, oneset) |> unlist()
+  #   return(sets)
+  # }
+  #
+  # get_barN <- function(whichset) {
+  #   getNset <- function(whichset) {
+  #     sets |>
+  #       dplyr::filter(set == whichset) |>
+  #       dplyr::summarize(n = dplyr::n()) |>
+  #       dplyr::pull(n)
+  #   }
+  #
+  #   bar_counts <- lapply(whichset, getNset) |> unlist()
+  #   return(bar_counts)
+  # }
+  #
+  # # Step 2: Get the sets and the bar counts for the given `plots_report`
+  # plots_report <- sub(".*#(.*)", "\\1", meta)
+  # allsets <- get_set(plots_report)
+
+  #num_bars <- get_barN(allsets)
+
+  # Step 3: Initialize a list to store the RMarkdown chunks
+  rmd_chunks <- list()
+
+  # Standard plot height
+  standard_height <- 5
+
+  # Step 4: Loop through the sequence and generate RMarkdown content
+  for (x in 1:length(meta)) {
+    # Access the correct num_bars for the current index
+    num_bars_x <- num_bars[x]
+
+    # Handle cases where num_bars_x might be NULL or NA
+    if (is.null(num_bars_x) || is.na(num_bars_x)) {
+      warning(paste("Invalid number of bars for plot", x, ". Using default height."))
+      num_bars_x <- 3  # Default value for num_bars_x
+    }
+
+    # Adjust fig.height based on the number of bars
+    if (num_bars_x == 3) {
+      fig_height <- standard_height - 1  # Decrease by 1 for 3 bars
+    } else if (num_bars_x == 2) {
+      fig_height <- standard_height - 2  # Decrease by 2 for 2 bars
+    } else if (num_bars_x == 1) {
+      fig_height <- standard_height - 3  # Decrease by 3 for 1 bar
+    } else {
+      fig_height <- standard_height  # Keep standard height for more than 3 bars
+    }
+
+    # Ensure fig_height doesn't go below a minimum value (e.g., 3)
+    fig_height <- max(fig_height, 3)
+
+    # Create RMarkdown chunks
+    chunk1 <- sprintf("```{r, results='asis'}\ncat(paste0('## ', header_report$header1[%d]))\n```", x)
+    chunk2 <- sprintf("```{r, fig.height=%d}\nplot_list[[%d]]\n```", fig_height, x)
+    #chunk3 <- sprintf("```{r}\ntable_list[[%d]]\n```", x)
+    #chunk3_vfill <- '\\vspace*{1cm}'  # Vertical space for chunk 3
+    #"\\newpage"
+
+    # Append chunks to the list
+    rmd_chunks <- c(rmd_chunks, chunk1, chunk2)
+  }
+
+  # Step 5: Combine all chunks into a single string, separated by newlines
+  rmd_content <- paste(rmd_chunks, collapse = "\n\n")
+
+  # Return the full RMarkdown content
+  return(rmd_content)
+}
+
+
 
 #' Generate the Rmd file for the report
 #' @description Functions combines the template and adds the Rmd content
@@ -98,7 +189,8 @@ get_rmd <- function(x_seq) {
 #' @export
 
 
-generate_rmd <- function(x_seq,
+generate_rmd <- function(meta,
+                         num_bars,
                          ubb,
                          export = TRUE,
                          file_name = "generated_document.Rmd") {
@@ -120,7 +212,11 @@ generate_rmd <- function(x_seq,
   yaml_header <- paste(yaml_header, collapse = "\n")
 
   # Get the RMarkdown content from the get_rmd function
-  rmd_content <- get_rmd(x_seq)
+  #rmd_content <- get_rmd(x_seq)
+
+  # Example usage:
+  #plots_report <- sub(".*#(.*)", "\\1", tmp.meta)
+  rmd_content <- get_rmd3(meta = meta, num_bars = num_bars)
 
   # Combine the YAML header with the RMarkdown content
   full_rmd <- paste(yaml_header, rmd_content, sep = "\n\n")
@@ -189,6 +285,11 @@ create_directories <- function (snr, audience, ubb) {
   file.copy(
     from = paste0(package_path, "NotoSans-Regular.ttf"),
     to = paste0(tmp.dir, "/NotoSans-Regular.ttf")
+  )
+
+  file.copy(
+    from = paste0(package_path, "GloriaHallelujah-Regular.ttf"),
+    to = paste0(tmp.dir, "/GloriaHallelujah-Regular.ttf")
   )
 
 
@@ -596,7 +697,23 @@ run_Parallel <- function(snr,
     header_report <- header_report |> dplyr::filter(plot %in% plots_report)
   }
 
+  #we need to count how many vars in each plot
+  plots_count <- reports |>
+    dplyr::filter(report == tmp.report) |>
+    dplyr::group_by(plot) |>
+    dplyr::summarise(vars_count = dplyr::n_distinct(vars))
+
+  if (ubb) {
+    #Give the word cloud room to breathe
+    plots_count$vars_count[plots_count$plot == "A3a"] <- 6
+  }
+
+
+
+  header_report <- header_report |> dplyr::left_join(plots_count, by = "plot")
+
   tmp.meta <- paste0("XX#", header_report$plot)
+  tmp.count <- header_report$vars_count
 
   num_cores <- parallel::detectCores()
   workers <- max(1, num_cores - 1)  #
@@ -619,25 +736,26 @@ run_Parallel <- function(snr,
   ), .progress = TRUE)
 
   cli::cli_progress_update();
-  cli::cli_progress_step("Create tables", spinner = TRUE)
-  # Generate the list of tables in parallel
-  table_list <- furrr::future_map(tmp.meta, ~ get_table(
-    meta = .x,
-    data = tmp.data,
-    audience = audience,
-    ubb = ubb,
-    report = tmp.report,
-    snr = snr,
-    export = FALSE
-  ), .progress = TRUE)
+  # cli::cli_progress_step("Create tables", spinner = TRUE)
+  # # Generate the list of tables in parallel
+  # table_list <- furrr::future_map(tmp.meta, ~ get_table(
+  #   meta = .x,
+  #   data = tmp.data,
+  #   audience = audience,
+  #   ubb = ubb,
+  #   report = tmp.report,
+  #   snr = snr,
+  #   export = FALSE
+  # ), .progress = TRUE)
 
 
-  cli::cli_progress_update();
+  #cli::cli_progress_update();
   cli::cli_progress_step("Create PDF", spinner = TRUE)
   tmp.dir <- get_directory(snr = snr)
 
   # Create a template Rmd file
-  generate_rmd(x_seq = 1:length(table_list),
+  generate_rmd(meta = tmp.meta,
+               num_bars = tmp.count,
                ubb = ubb,
                file_name = paste0(tmp.dir, "/", "template.Rmd"))
 
@@ -658,7 +776,7 @@ run_Parallel <- function(snr,
   # Filter out the PDF files
   files_to_delete <- all_files[!grepl("\\.pdf$", all_files, ignore.case = TRUE)]
   # Delete the non-PDF files
-  file.remove(files_to_delete)
+  #file.remove(files_to_delete)
 
   #Report via CLI if results are available:
   x <- paste0(tmp.dir, "/", snr, "_results_", audience, ".pdf")

@@ -4,16 +4,22 @@
 \alias{generate_rmd}
 \title{Generate the Rmd file for the report}
 \usage{
-generate_rmd(x_seq, ubb, export = TRUE, file_name = "generated_document.Rmd")
+generate_rmd(
+  meta,
+  num_bars,
+  ubb,
+  export = TRUE,
+  file_name = "generated_document.Rmd"
+)
 }
 \arguments{
-\item{x_seq}{Sequence}
-
 \item{ubb}{UBB}
 
 \item{export}{Export}
 
 \item{file_name}{File name}
+
+\item{x_seq}{Sequence}
 }
 \value{
 Returns a plot

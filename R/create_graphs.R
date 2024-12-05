@@ -25,28 +25,6 @@ export_plot = function (meta,
 
 
   if (tmp.plotid == "A3a") {
-    # freitext <- tmp.data |> dplyr::filter(vars == "A311ub")
-    #
-    # df <- tibble::tibble(Angabe = freitext$vals)
-    #
-    # # word_data <- df |>
-    # #   tidytext::unnest_tokens(word, txt)
-    #
-    # word_count <- df |>
-    #   dplyr::count(Angabe, sort = TRUE) |>
-    #   dplyr::mutate(angle = 90 * sample(c(0, 1), dplyr::n(),
-    #                                     replace = TRUE,
-    #                                     prob = c(60, 40)))
-    #
-    # set.seed(123)
-    # tmp.p <- ggplot2::ggplot(word_count, ggplot2::aes(label = Angabe,
-    #                                          size = n,
-    #                                          angle = angle)) +
-    #   #ggwordcloud::geom_text_wordcloud() +
-    #   ggwordcloud::geom_text_wordcloud_area(eccentricity = .32, rm_outside = FALSE) +
-    #   ggplot2::scale_size_area(max_size = 30)+
-    #   ggplot2::theme_minimal()
-
     tmp.p <- createWordCloud(data = tmp.data)
 
   }else {
@@ -160,40 +138,85 @@ export_plot = function (meta,
       data$newlable <- data$label_short
       data$newlable <- as.factor(data$newlable)
 
-      tmp.p <- ggplot2::ggplot(data, ggplot2::aes(fill = vals, y = anz, x =
-                                                    newlable)) +
+      # tmp.p <- ggplot2::ggplot(data, ggplot2::aes(fill = vals, y = anz, x =
+      #                                               newlable)) +
+      #   ggplot2::geom_bar(
+      #     stat = 'identity',
+      #     position = ggplot2::position_stack(),
+      #     width = 0.5
+      #   ) +
+      #   ggplot2::geom_label(
+      #     ggplot2::aes(label = paste(as.character(anz),"\n", label_n), group = factor(vals)),
+      #     #ggplot2::aes(label = as.character(anz), group = factor(vals)),
+      #     position = ggplot2::position_stack(vjust = 0.5),
+      #     size = 2.8,
+      #     fill = "white",
+      #     colour = "black"
+      #   )+
+      #   ggplot2::scale_fill_manual(
+      #     breaks = rev(tmp.item.labels$labels),
+      #     values = rev(tmp.item.labels$colors),
+      #     drop = TRUE
+      #   ) +
+      #   ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(n.dodge = 1),
+      #                             labels = function(x)
+      #                               stringr::str_wrap(x, width = 40),
+      #                             limits = rev(levels(data$newlable))) +
+      #   ggplot2::scale_y_continuous(breaks = scales::pretty_breaks())+
+      #   ggplot2::coord_flip() +
+      #   ggplot2::theme_minimal(base_size = 12) +
+      #   ggplot2::theme(
+      #     legend.position = "bottom",
+      #     axis.text = ggplot2::element_text(size = 8),
+      #     legend.box.margin = ggplot2::margin(0, 0, 0, 0) ,
+      #     legend.text = ggplot2::element_text(size=8),
+      #     legend.spacing.y = ggplot2::unit(0.5, "cm"),
+      #     legend.key.size = ggplot2::unit(0.5, "lines"),
+      #     axis.text.y = ggplot2::element_text(hjust = 0)
+      #   ) +
+      #   ggplot2::labs(x = '', y = 'Anzahl', fill = "")
+
+      tmp.p <- ggplot2::ggplot(data, ggplot2::aes(fill = vals, y = anz, x = newlable)) +
         ggplot2::geom_bar(
           stat = 'identity',
           position = ggplot2::position_stack(),
           width = 0.5
         ) +
         ggplot2::geom_label(
-          ggplot2::aes(label = as.character(anz), group = factor(vals)),
+          ggplot2::aes(label = paste(as.character(anz), "\n", label_n), group = factor(vals)),
           position = ggplot2::position_stack(vjust = 0.5),
           size = 2.8,
           fill = "white",
           colour = "black"
-        )+
+        ) +
         ggplot2::scale_fill_manual(
           breaks = rev(tmp.item.labels$labels),
           values = rev(tmp.item.labels$colors),
-          drop = TRUE
+          drop = TRUE,
+          labels = function(x) stringr::str_wrap(x, width = 12)  # Wrap legend text
         ) +
-        ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(n.dodge = 1),
-                                  labels = function(x)
-                                    stringr::str_wrap(x, width = 40),
-                                  limits = rev(levels(data$newlable))) +
-        ggplot2::scale_y_continuous(breaks = scales::pretty_breaks())+
+        ggplot2::scale_x_discrete(
+          guide = ggplot2::guide_axis(n.dodge = 1),
+          labels = function(x) stringr::str_wrap(x, width = 40),
+          limits = rev(levels(data$newlable))
+        ) +
+        ggplot2::scale_y_continuous(breaks = scales::pretty_breaks()) +
         ggplot2::coord_flip() +
         ggplot2::theme_minimal(base_size = 12) +
         ggplot2::theme(
-          legend.position = "bottom",
-          axis.text = ggplot2::element_text(size = 11),
-          #legend.text = ggplot2::element_text(size=8),
+          legend.position = "bottom",  # Position the legend at the bottom
+          legend.box.margin = ggplot2::margin(10, 10, 10, 10),  # Margin adjustments for the legend
+          legend.spacing.y = ggplot2::unit(0.5, "cm"),  # Spacing between legend items
+          legend.key.size = ggplot2::unit(0.5, "lines"),  # Size of the legend keys (icons)
+          legend.text = ggplot2::element_text(size = 8),  # Size of the legend text
+          axis.text = ggplot2::element_text(size = 10),
           axis.text.y = ggplot2::element_text(hjust = 0)
         ) +
-        ggplot2::labs(x = '', y = 'Anzahl', fill = "")+
-        las_theme
+        ggplot2::labs(x = '', y = 'Anzahl', fill = "")
+
+
+
+
 
     }
   }
@@ -295,26 +318,25 @@ create_allplots2 = function (meta,
 #' @export
 
 createWordCloud <- function(data) {
-  freitext <- data |> dplyr::filter(vars == "A311ub")
+  freitext <- tmp.data |> dplyr::filter(vars == "A311ub")
 
   df <- tibble::tibble(Angabe = freitext$vals)
 
+
   # word_data <- df |>
-  #   tidytext::unnest_tokens(word, txt)
+  #   tidytext::unnest_tokens(word, txt, token = "lines")
 
   word_count <- df |>
-    dplyr::count(Angabe, sort = TRUE) |>
-    dplyr::mutate(angle = 90 * sample(c(0, 1), dplyr::n(),
-                                      replace = TRUE,
-                                      prob = c(60, 40)))
+    dplyr::count(Angabe, sort = TRUE)
 
-  set.seed(123)
-  tmp.p <- ggplot2::ggplot(word_count, ggplot2::aes(label = Angabe,
-                                                    size = n,
-                                                    angle = angle)) +
+  tmp.p <- ggplot2::ggplot(word_count,
+                           ggplot2::aes(label = Angabe,
+                                        size = n)) +
     #ggwordcloud::geom_text_wordcloud() +
-    ggwordcloud::geom_text_wordcloud_area(eccentricity = .32, rm_outside = FALSE) +
-    ggplot2::scale_size_area(max_size = 30)+
+    ggwordcloud::geom_text_wordcloud_area(color = "black",
+                                          family="Gloria Hallelujah",
+                                          rm_outside = FALSE) +
+    ggplot2::scale_size_area(max_size = 24, trans = ggwordcloud::power_trans(1/.7)) +
     ggplot2::theme_minimal()
 
   return(tmp.p)

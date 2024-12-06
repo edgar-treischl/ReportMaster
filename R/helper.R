@@ -705,7 +705,7 @@ run_Parallel <- function(snr,
 
   if (ubb) {
     #Give the word cloud room to breathe
-    plots_count$vars_count[plots_count$plot == "A3a"] <- 6
+    plots_count$vars_count[plots_count$plot == "A3a"] <- 3
   }
 
 
@@ -724,6 +724,7 @@ run_Parallel <- function(snr,
 
   cli::cli_progress_update();
   cli::cli_progress_step("Create plots", spinner = TRUE)
+
   # Generate the list of plots in parallel
   plot_list <- furrr::future_map(tmp.meta, ~ export_plot(
     meta = .x,
@@ -733,7 +734,10 @@ run_Parallel <- function(snr,
     data = tmp.data,
     ubb = ubb,
     export = FALSE
-  ), .progress = TRUE)
+  ), .progress = TRUE,
+  .options = furrr::furrr_options(
+    packages = c("ggtext", "showtext", "stringr")  # Ensure packages are loaded in each worker
+  ))
 
   cli::cli_progress_update();
   # cli::cli_progress_step("Create tables", spinner = TRUE)

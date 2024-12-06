@@ -82,21 +82,45 @@ export_plot = function (meta,
 
     #data$txtlabel <- paste0(data$label_n, "\n (n: ", data$anz, ")")
 
-    las_theme <- ggplot2::theme(
-      #axis.title.x = ggplot2::element_blank(),
-      legend.position = "none",
-      axis.text.x = ggplot2::element_text(size = 11),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(size = 12),
-      plot.margin = ggplot2::margin(t = 10,  # Top margin
-                                    r = 0,  # Right margin
-                                    b = 10,  # Bottom margin
-                                    l = 0)) # Left margin
+    # las_theme <- ggplot2::theme(
+    #   #axis.title.x = ggplot2::element_blank(),
+    #   legend.position = "none",
+    #   axis.text.x = ggplot2::element_text(size = 11),
+    #   axis.title.y = ggplot2::element_blank(),
+    #   axis.text.y = ggplot2::element_text(size = 12),
+    #   plot.margin = ggplot2::margin(t = 10,  # Top margin
+    #                                 r = 0,  # Right margin
+    #                                 b = 10,  # Bottom margin
+    #                                 l = 0)) # Left margin
+
 
     #Plots for UBB (absolute values) vs. survey (relative values) label_n
     if (ubb == FALSE) {
+
       data$newlable <- paste0(data$vars, ": ", data$label_short)
       data$newlable <- as.factor(data$newlable)
+
+
+      bold_labels <- sapply(data$newlable, function(x) {
+
+        # Wrap the entire label to fit within the axis (Markdown formatting still intact)
+        x <- stringr::str_wrap(x, width = 40)
+
+        # Replace Markdown newlines (\n) with HTML <br> tags for ggtext::element_markdown
+        x <- stringr::str_replace_all(x, "\n", "<br>")
+
+        # Extract the part before the colon (e.g., "B223c (sus):")
+        bold_part <- stringr::str_extract(x, "^[^:]+:")  # Match everything before the first colon and include the colon
+
+        # Add bold formatting using Markdown syntax
+        bold_part <- paste0("**", bold_part, "**")
+
+        # Extract the part after the colon
+        rest_part <- stringr::str_remove(x, "^[^:]+:")  # Remove everything before and including the colon
+
+        # Combine the bold part and the rest of the string
+        new_label <- paste0(bold_part, rest_part)
+      })
 
       tmp.p <- ggplot2::ggplot(data, ggplot2::aes(fill = vals, y = p, x = newlable)) +
         ggplot2::geom_bar(
@@ -105,7 +129,7 @@ export_plot = function (meta,
           width = 0.5
         ) +
         ggplot2::geom_label(
-          ggplot2::aes(label = label_n, group = factor(vals)),
+          ggplot2::aes(label = paste0(label_n, "\n", "(", anz, ")"), group = factor(vals)),
           position = ggplot2::position_stack(vjust = 0.5),
           size = 2.8,
           fill = "white",
@@ -114,29 +138,90 @@ export_plot = function (meta,
         ggplot2::scale_fill_manual(
           breaks = rev(tmp.item.labels$labels),
           values = rev(tmp.item.labels$colors),
-          drop = TRUE
+          drop = TRUE,
+          labels = function(x) stringr::str_wrap(x, width = 7)
         ) +
         ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(n.dodge = 1),
-                                  labels = function(x)
-                                    stringr::str_wrap(x, width = 40),
+                                  labels = bold_labels,
                                   limits = rev(levels(data$newlable))) +
         ggplot2::coord_flip() +
         ggplot2::theme_minimal(base_size = 12) +
         ggplot2::theme(
           legend.position = "bottom",
-          axis.text = ggplot2::element_text(size = 10),
-          #legend.text = ggplot2::element_text(size=8),
-          axis.text.y = ggplot2::element_text(hjust = 0)
-        ) +
+          #legend.box.margin = ggplot2::margin(10, 10, 10, 10),
+          legend.spacing.y = ggplot2::unit(0.5, "cm"),
+          legend.key.size = ggplot2::unit(0.5, "lines"),
+          legend.text = ggplot2::element_text(size = 9, lineheight = 0.8),
+          #axis.text = ggplot2::element_text(size = 9),
+          axis.text = ggtext::element_markdown(size = 9),
+          axis.text.y = ggplot2::element_text(hjust = 0))+
         ggplot2::labs(x = '', y = 'Prozent', fill = "") +
-        ggplot2::guides(fill  =  ggplot2::guide_legend(nrow = 2))+
-        las_theme
+        ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1))
+
+
+
+
+      # tmp.p <- ggplot2::ggplot(data, ggplot2::aes(fill = vals, y = p, x = newlable)) +
+      #   ggplot2::geom_bar(
+      #     stat = 'identity',
+      #     position = ggplot2::position_stack(),
+      #     width = 0.5
+      #   ) +
+      #   ggplot2::geom_label(
+      #     ggplot2::aes(label = label_n, group = factor(vals)),
+      #     position = ggplot2::position_stack(vjust = 0.5),
+      #     size = 2.8,
+      #     fill = "white",
+      #     colour = "black"
+      #   ) +
+      #   ggplot2::scale_fill_manual(
+      #     breaks = rev(tmp.item.labels$labels),
+      #     values = rev(tmp.item.labels$colors),
+      #     drop = TRUE
+      #   ) +
+      #   ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(n.dodge = 1),
+      #                             labels = function(x)
+      #                               stringr::str_wrap(x, width = 40),
+      #                             limits = rev(levels(data$newlable))) +
+      #   ggplot2::coord_flip() +
+      #   ggplot2::theme_minimal(base_size = 12) +
+      #   ggplot2::theme(
+      #     legend.position = "bottom",
+      #     axis.text = ggplot2::element_text(size = 10),
+      #     #legend.text = ggplot2::element_text(size=8),
+      #     axis.text.y = ggplot2::element_text(hjust = 0)
+      #   ) +
+      #   ggplot2::labs(x = '', y = 'Prozent', fill = "") +
+      #   ggplot2::guides(fill  =  ggplot2::guide_legend(nrow = 2))+
+      #   las_theme
 
     }
 
     if (ubb == TRUE) {
       data$newlable <- data$label_short
       data$newlable <- as.factor(data$newlable)
+      data$newlable <- stringr::str_replace(data$newlable, " ", ": ")
+
+      bold_labels <- sapply(data$newlable, function(x) {
+
+        # Wrap the entire label to fit within the axis (Markdown formatting still intact)
+        x <- stringr::str_wrap(x, width = 40)
+
+        # Replace Markdown newlines (\n) with HTML <br> tags for ggtext::element_markdown
+        x <- stringr::str_replace_all(x, "\n", "<br>")
+
+        # Extract the part before the colon (e.g., "B223c (sus):")
+        bold_part <- stringr::str_extract(x, "^[^:]+:")  # Match everything before the first colon and include the colon
+
+        # Add bold formatting using Markdown syntax
+        bold_part <- paste0("**", bold_part, "**")
+
+        # Extract the part after the colon
+        rest_part <- stringr::str_remove(x, "^[^:]+:")  # Remove everything before and including the colon
+
+        # Combine the bold part and the rest of the string
+        new_label <- paste0(bold_part, rest_part)
+      })
 
       # tmp.p <- ggplot2::ggplot(data, ggplot2::aes(fill = vals, y = anz, x =
       #                                               newlable)) +
@@ -197,19 +282,23 @@ export_plot = function (meta,
         ) +
         ggplot2::scale_x_discrete(
           guide = ggplot2::guide_axis(n.dodge = 1),
-          labels = function(x) stringr::str_wrap(x, width = 40),
+          labels = bold_labels,
           limits = rev(levels(data$newlable))
         ) +
-        ggplot2::scale_y_continuous(breaks = scales::pretty_breaks()) +
+        ggplot2::scale_y_continuous(
+          breaks = function(x) scales::pretty_breaks()(x) |> round(),  # Apply rounding to the breaks
+          labels = scales::number_format(accuracy = 1)  # Format labels as integers
+        )+
         ggplot2::coord_flip() +
         ggplot2::theme_minimal(base_size = 12) +
         ggplot2::theme(
-          legend.position = "bottom",  # Position the legend at the bottom
-          legend.box.margin = ggplot2::margin(10, 10, 10, 10),  # Margin adjustments for the legend
-          legend.spacing.y = ggplot2::unit(0.5, "cm"),  # Spacing between legend items
-          legend.key.size = ggplot2::unit(0.5, "lines"),  # Size of the legend keys (icons)
-          legend.text = ggplot2::element_text(size = 8),  # Size of the legend text
-          axis.text = ggplot2::element_text(size = 10),
+          legend.position = "bottom",
+          legend.box.margin = ggplot2::margin(10, 10, 10, 10),
+          legend.spacing.y = ggplot2::unit(0.5, "cm"),
+          legend.key.size = ggplot2::unit(0.5, "lines"),
+          legend.text = ggplot2::element_text(size = 9),
+          #axis.text = ggplot2::element_text(size = 9),
+          axis.text = ggtext::element_markdown(size = 9),
           axis.text.y = ggplot2::element_text(hjust = 0)
         ) +
         ggplot2::labs(x = '', y = 'Anzahl', fill = "")
@@ -253,6 +342,7 @@ export_plot = function (meta,
 
     usethis::ui_done("Export plot: {usethis::ui_value(tmp.plotid)}")
   }
+
   return(tmp.p)
 
 }

@@ -26,6 +26,8 @@ Sys.setenv(R_CONFIG_ACTIVE = "default")
 
 knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE,
+                      dev = "cairo_pdf",
+                      fig.retina = 1,
                       message = FALSE)
 
 flextable::set_flextable_defaults(fonts_ignore=TRUE)

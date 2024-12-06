@@ -7,7 +7,7 @@ output:
     keep_tex: true
 header-includes:
   - \usepackage{fontspec}
-  - \setmainfont{NotoSans-Regular.ttf}
+  - \setmainfont{NotoSans-Regular}
   - \setlength{\parindent}{0pt}
 lang: de-DE
 params:
@@ -28,10 +28,10 @@ knitr::opts_chunk$set(echo = FALSE)
 
 flextable::set_flextable_defaults(fonts_ignore=TRUE)
 
-library(showtext)
-
-font_add("Noto Sans", "NotoSans-Regular.ttf")
-showtext_auto()
+# library(showtext)
+# 
+# font_add("Noto Sans", "NotoSans-Regular.ttf")
+# showtext_auto()
 
 headers_df <- export_headers(tmp.meta, 
                              ubb = ubb)

@@ -18,6 +18,10 @@ export_plot = function (meta,
                         ubb,
                         export = TRUE) {
 
+  #Load fonts
+  sysfonts::font_add("Noto Sans", "NotoSans-Regular.ttf")
+  showtext::showtext_auto()
+
   #Split meta list
   tmp.var <- stringr::str_split(meta,"#") |> unlist()
   tmp.rprtpckg <- tmp.var[1]
@@ -25,6 +29,7 @@ export_plot = function (meta,
 
 
   if (tmp.plotid == "A3a") {
+    tmp.var_plot <- 5
     tmp.p <- createWordCloud(data = tmp.data)
 
   }else {
@@ -328,11 +333,13 @@ export_plot = function (meta,
     }
 
 
-    tmp.dir_res <- get_directory_res(snr = snr, audience = audience)
+    #tmp.dir_res <- get_directory_res(snr = snr, audience = audience)
     #tmp.dir_res <- here::here()
 
+    tmp.dir <- get_directory(snr = snr)
+
     ggplot2::ggsave(paste0(tmp.plotid,'_plot.pdf'),
-                    path =  paste0(tmp.dir_res, "/plots"),
+                    path =  paste0(tmp.dir, "/plots"),
                     plot = tmp.p,
                     width = 210,
                     height = height_plot,
@@ -386,8 +393,8 @@ create_allplots2 = function (meta,
                    report = report))
 
   #What will be exported
-  tmp.dir_res <- get_directory_res(snr = snr, audience = audience)
-  all_files <- list.files(path = here::here(tmp.dir_res, "plots"), pattern = "_plot.pdf")
+  tmp.dir <- get_directory(snr = snr)
+  all_files <- list.files(path = here::here(tmp.dir, "plots"), pattern = "_plot.pdf")
   count_png <- length(all_files)
 
   #Inform what was exported
@@ -418,6 +425,9 @@ createWordCloud <- function(data) {
 
   word_count <- df |>
     dplyr::count(Angabe, sort = TRUE)
+
+  sysfonts::font_add("Gloria Hallelujah", "GloriaHallelujah-Regular.ttf")
+  showtext::showtext_auto()
 
   tmp.p <- ggplot2::ggplot(word_count,
                            ggplot2::aes(label = Angabe,

@@ -330,8 +330,9 @@ get_table = function (meta,
 
 
   if (export == TRUE) {
-    tmp.dir_res <- get_directory_res(snr = snr, audience = audience)
-    mypath <- paste(paste0(tmp.dir_res, '/plots/', tmp.plotid,'_table.svg'))
+    #tmp.dir_res <- get_directory_res(snr = snr, audience = audience)
+    tmp.dir <- get_directory(snr = snr)
+    mypath <- paste(paste0(tmp.dir, '/plots/', tmp.plotid,'_table.svg'))
     flextable::save_as_image(x = ft, path = mypath)
 
     usethis::ui_done("Export table: {usethis::ui_value(tmp.plotid)}")
@@ -380,20 +381,21 @@ export_tables = function (meta,
                    export = TRUE))
 
   #List svg tables
-  tmp.dir_res <- get_directory_res(snr = snr, audience = audience)
-  mysvgs <- list.files(path = paste0(tmp.dir_res, "/plots"),
+  #tmp.dir_res <- get_directory_res(snr = snr, audience = audience)
+  tmp.dir <- get_directory(snr = snr)
+  mysvgs <- list.files(path = paste0(tmp.dir, "/plots"),
                        pattern = ".svg",
                        full.names = FALSE)
 
   #List svg table paths
-  mysvgs_paths <- list.files(path = paste0(tmp.dir_res, "/plots"),
+  mysvgs_paths <- list.files(path = paste0(tmp.dir, "/plots"),
                              pattern = ".svg", ignore.case = T,
                              full.names = TRUE)
 
 
   #create table.pdfS: name and paths
   mypdfs <- paste0(tools::file_path_sans_ext(mysvgs), ".pdf")
-  mypath <- paste(paste0(tmp.dir_res, '/plots/', mypdfs))
+  mypath <- paste(paste0(tmp.dir, '/plots/', mypdfs))
 
   #Convert to pdf
   invisible(mapply(rsvg::rsvg_pdf, mysvgs_paths, file = mypath))

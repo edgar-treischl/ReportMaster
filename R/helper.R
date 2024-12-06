@@ -95,38 +95,6 @@ get_rmd <- function(x_seq) {
 
 get_rmd3 <- function(meta, num_bars) {
 
-  # # Step 1: Define the helper functions to get the sets and bar counts
-  # get_set <- function(reportplot) {
-  #   oneset <- function(reportplot) {
-  #     reports |>
-  #       dplyr::filter(report == tmp.report) |>
-  #       dplyr::filter(plot == reportplot) |>
-  #       dplyr::pull(sets) |>
-  #       unique()
-  #   }
-  #
-  #   sets <- lapply(reportplot, oneset) |> unlist()
-  #   return(sets)
-  # }
-  #
-  # get_barN <- function(whichset) {
-  #   getNset <- function(whichset) {
-  #     sets |>
-  #       dplyr::filter(set == whichset) |>
-  #       dplyr::summarize(n = dplyr::n()) |>
-  #       dplyr::pull(n)
-  #   }
-  #
-  #   bar_counts <- lapply(whichset, getNset) |> unlist()
-  #   return(bar_counts)
-  # }
-  #
-  # # Step 2: Get the sets and the bar counts for the given `plots_report`
-  # plots_report <- sub(".*#(.*)", "\\1", meta)
-  # allsets <- get_set(plots_report)
-
-  #num_bars <- get_barN(allsets)
-
   # Step 3: Initialize a list to store the RMarkdown chunks
   rmd_chunks <- list()
 
@@ -161,12 +129,13 @@ get_rmd3 <- function(meta, num_bars) {
     # Create RMarkdown chunks
     chunk1 <- sprintf("```{r, results='asis'}\ncat(paste0('## ', header_report$header1[%d]))\n```", x)
     chunk2 <- sprintf("```{r, fig.height=%d}\nplot_list[[%d]]\n```", fig_height, x)
-    #chunk3 <- sprintf("```{r}\ntable_list[[%d]]\n```", x)
-    #chunk3_vfill <- '\\vspace*{1cm}'  # Vertical space for chunk 3
+    chunk3 <- sprintf("```{r}\ntable_list[[%d]]\n```", x)
+    chunk3_vfill <- '\\vspace*{1cm}'  # Vertical space for chunk 3
     #"\\newpage"
 
     # Append chunks to the list
-    rmd_chunks <- c(rmd_chunks, chunk1, chunk2)
+    #rmd_chunks <- c(rmd_chunks, chunk1, chunk2)
+    rmd_chunks <- c(rmd_chunks, chunk1, chunk2, chunk3_vfill, chunk3)
   }
 
   # Step 5: Combine all chunks into a single string, separated by newlines
@@ -177,6 +146,79 @@ get_rmd3 <- function(meta, num_bars) {
 }
 
 
+#' Get Rmd Code for the Report
+#' @description Depending on the number of plots and tables, the function
+#'  creates the Rmd chunks for the report
+#' @param x_seq Sequence
+#' @return Character
+#' @export
+#'
+get_rmdX <- function(meta, num_bars) {
+
+  # Step 1: Ensure that meta and num_bars have the same length
+  if (length(meta) != length(num_bars)) {
+    stop("The length of 'meta' and 'num_bars' must be the same.")
+  }
+
+  meta <- sub(".*#(.*)", "\\1", meta)
+  # Step 2: Initialize a list to store the RMarkdown chunks
+  rmd_chunks <- list()
+
+  # Standard plot height
+  standard_height <- 5
+
+  # Step 3: Loop through the sequence and generate RMarkdown content
+  for (x in seq_along(meta)) {
+    # Access the correct num_bars for the current index
+    plot_name <- meta[x]
+    num_bars_x <- num_bars[x]
+
+    # Handle cases where num_bars_x might be NULL or NA
+    if (is.null(num_bars_x) || is.na(num_bars_x)) {
+      warning(paste("Invalid number of bars for plot", x, ". Using default height."))
+      num_bars_x <- 3  # Default value for num_bars_x
+    }
+
+    # Adjust fig.height based on the number of bars
+    if (num_bars_x == 3) {
+      fig_height <- standard_height - 1  # Decrease by 1 for 3 bars
+    } else if (num_bars_x == 2) {
+      fig_height <- standard_height - 2  # Decrease by 2 for 2 bars
+    } else if (num_bars_x == 1) {
+      fig_height <- standard_height - 3  # Decrease by 3 for 1 bar
+    } else {
+      fig_height <- standard_height  # Keep standard height for more than 3 bars
+    }
+
+    # Ensure fig_height doesn't go below a minimum value (e.g., 3)
+    fig_height <- max(fig_height, 3)
+
+    # Create RMarkdown chunks
+    chunk1 <- paste0("```{r, results='asis'}\n",
+                     "cat(paste0('## ', header_report$header1[", x, "]))\n",
+                     "```")
+
+    chunk2 <- paste0("```{r, fig.height=", fig_height, "}\n",
+                     "knitr::include_graphics('plots/", plot_name, "_plot.pdf')\n",
+                     "```")
+
+    # chunk3 <- paste0("```{r}\n",
+    #                  "table_list[['", plot_name, "']]\n",
+    #                  "```")
+    #
+    # chunk3_vfill <- '\\vspace*{1cm}'  # Vertical space for chunk 3
+
+    # Append chunks to the list
+    #rmd_chunks <- append(rmd_chunks, list(chunk1, chunk2, chunk3_vfill, chunk3))
+    rmd_chunks <- append(rmd_chunks, list(chunk1, chunk2))
+  }
+
+  # Step 4: Combine all chunks into a single string, separated by newlines
+  rmd_content <- paste(unlist(rmd_chunks), collapse = "\n\n")
+
+  # Return the full RMarkdown content
+  return(rmd_content)
+}
 
 #' Generate the Rmd file for the report
 #' @description Functions combines the template and adds the Rmd content
@@ -216,7 +258,7 @@ generate_rmd <- function(meta,
 
   # Example usage:
   #plots_report <- sub(".*#(.*)", "\\1", tmp.meta)
-  rmd_content <- get_rmd3(meta = meta, num_bars = num_bars)
+  rmd_content <- get_rmdX(meta = meta, num_bars = num_bars)
 
   # Combine the YAML header with the RMarkdown content
   full_rmd <- paste(yaml_header, rmd_content, sep = "\n\n")
@@ -260,6 +302,21 @@ create_directories <- function (snr, audience, ubb) {
     dir.create(tmp.dir)
   }
 
+
+  if(!dir.exists(here::here(tmp.dir, "plots"))){
+    dir.create(here::here(tmp.dir, "plots"))
+  }
+
+  if(!dir.exists(here::here(tmp.dir, "plots/p/"))){
+    dir.create(here::here(tmp.dir, "plots/p/"))
+  }
+
+  # tmp.dir_res <- here::here("res", paste0(snr, "_", year, "/", audience, "/", "plots"))
+  #
+  # if(!dir.exists(tmp.dir_res)){
+  #   dir.create(tmp.dir_res)
+  # }
+
   syspath <- system.file(package = "ReportMaster")
   package_path <- paste0(syspath, "/templates/")
 
@@ -282,15 +339,15 @@ create_directories <- function (snr, audience, ubb) {
     to = paste0(tmp.dir, "/header_eva_las.png")
   )
 
-  file.copy(
-    from = paste0(package_path, "NotoSans-Regular.ttf"),
-    to = paste0(tmp.dir, "/NotoSans-Regular.ttf")
-  )
-
-  file.copy(
-    from = paste0(package_path, "GloriaHallelujah-Regular.ttf"),
-    to = paste0(tmp.dir, "/GloriaHallelujah-Regular.ttf")
-  )
+  # file.copy(
+  #   from = paste0(package_path, "NotoSans-Regular.ttf"),
+  #   to = paste0(tmp.dir, "/NotoSans-Regular.ttf")
+  # )
+  #
+  # file.copy(
+  #   from = paste0(package_path, "GloriaHallelujah-Regular.ttf"),
+  #   to = paste0(tmp.dir, "/GloriaHallelujah-Regular.ttf")
+  # )
 
 
 }
@@ -338,43 +395,43 @@ create_report <- function(snr,
   }
 
   #Create path for subfolders (e.g. sus)
-  tmp.dir_res <- paste0("res/", snr,"_", year, "/", audience)
+  #tmp.dir_res <- paste0("res/", snr,"_", year, "/", audience)
 
   #Create folder if not exist
-  if(!dir.exists(tmp.dir_res)){
-    dir.create(here::here(tmp.dir_res))
+  # if(!dir.exists(tmp.dir_res)){
+  #   dir.create(here::here(tmp.dir_res))
+  # }
+
+  if(!dir.exists(here::here(path, "plots"))){
+    dir.create(here::here(path, "plots"))
   }
 
-  if(!dir.exists(here::here(tmp.dir_res, "plots"))){
-    dir.create(here::here(tmp.dir_res, "plots"))
-  }
-
-  if(!dir.exists(here::here(tmp.dir_res, "plots/p/"))){
-    dir.create(here::here(tmp.dir_res, "plots/p/"))
+  if(!dir.exists(here::here(path, "plots/p/"))){
+    dir.create(here::here(path, "plots/p/"))
   }
 
   syspath <- system.file(package = "ReportMaster")
   package_path <- paste0(syspath, "/templates/")
 
   if (ubb == TRUE) {
-    file.copy(paste0(package_path, "template_ubb.Rmd"), here::here(tmp.dir_res, "plots"))
-    file.copy(paste0(package_path, "graphic_title_ubb.png"), here::here(tmp.dir_res, "plots"))
-    file.rename(from = here::here(tmp.dir_res, "plots/", "template_ubb.Rmd"),
-                to = here::here(tmp.dir_res, "plots/", "template.Rmd"))
+    file.copy(paste0(package_path, "template_ubb.Rmd"), here::here(path, "plots"))
+    file.copy(paste0(package_path, "graphic_title_ubb.png"), here::here(path, "plots"))
+    file.rename(from = here::here(path, "plots/", "template_ubb.Rmd"),
+                to = here::here(path, "plots/", "template.Rmd"))
   }
 
   if (ubb == FALSE) {
-    file.copy(paste0(package_path, "template_generale.Rmd"), here::here(tmp.dir_res, "plots"))
-    file.copy(paste0(package_path, "graphic-title_bfr.png"), here::here(tmp.dir_res, "plots"))
+    file.copy(paste0(package_path, "template_generale.Rmd"), here::here(path, "plots"))
+    file.copy(paste0(package_path, "graphic-title_bfr.png"), here::here(path, "plots"))
 
-    file.rename(from = here::here(tmp.dir_res, "plots", "template_generale.Rmd"),
-                to = here::here(tmp.dir_res, "plots", "template.Rmd"))
+    file.rename(from = here::here(path, "plots", "template_generale.Rmd"),
+                to = here::here(path, "plots", "template.Rmd"))
   }
 
 
   #for header plot
-  file.copy(paste0(package_path, "header_eva_las.png"), here::here(tmp.dir_res,"plots/p"))
-  file.copy(paste0(package_path, "NotoSans-Regular.ttf"), here::here(tmp.dir_res,"plots"))
+  file.copy(paste0(package_path, "header_eva_las.png"), here::here(path,"plots/p"))
+  file.copy(paste0(package_path, "NotoSans-Regular.ttf"), here::here(path,"plots"))
 
   #Get name of school
   tmp.name <- get_sname(snr)
@@ -384,9 +441,9 @@ create_report <- function(snr,
 
 
   #Adjust directory for UBB
-  if (ubb == TRUE) {
-    tmp.dir_res <- paste0("res/", snr,"_", year, "/", "ubb")
-  }
+  # if (ubb == TRUE) {
+  #   tmp.dir_res <- paste0("res/", snr,"_", year, "/", "ubb")
+  # }
 
   #Single steps
   tmp.session <- surveyConnectLs(user = tmp.user,
@@ -733,13 +790,13 @@ run_Parallel <- function(snr,
     report = tmp.report,
     data = tmp.data,
     ubb = ubb,
-    export = FALSE
+    export = TRUE
   ), .progress = TRUE,
   .options = furrr::furrr_options(
-    packages = c("ggtext", "showtext", "stringr")  # Ensure packages are loaded in each worker
+    packages = c("ggtext", "showtext", "stringr", "ggwordcloud", "dplyr")  # Ensure packages are loaded in each worker
   ))
 
-  cli::cli_progress_update();
+  # cli::cli_progress_update();
   # cli::cli_progress_step("Create tables", spinner = TRUE)
   # # Generate the list of tables in parallel
   # table_list <- furrr::future_map(tmp.meta, ~ get_table(
@@ -767,6 +824,7 @@ run_Parallel <- function(snr,
     input = paste0(tmp.dir, "/", "template.Rmd"),
     output_file = paste0(tmp.dir, "/", snr, "_results_", audience, ".pdf"),
     quiet = TRUE,
+    clean = FALSE,
     params = list(
       snr = snr,
       name = tmp.name,
@@ -776,11 +834,13 @@ run_Parallel <- function(snr,
     ))
 
   # List all files in the directory (without full paths)
-  all_files <- list.files(tmp.dir, full.names = TRUE)
+  all_files <- list.files(tmp.dir, full.names = TRUE, recursive = TRUE)
   # Filter out the PDF files
   files_to_delete <- all_files[!grepl("\\.pdf$", all_files, ignore.case = TRUE)]
   # Delete the non-PDF files
-  #file.remove(files_to_delete)
+  file.remove(files_to_delete)
+  dirs_to_delete <- here::here(tmp.dir, "plots")
+  unlink(dirs_to_delete, recursive = TRUE)
 
   #Report via CLI if results are available:
   x <- paste0(tmp.dir, "/", snr, "_results_", audience, ".pdf")

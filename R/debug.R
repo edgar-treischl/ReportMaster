@@ -5,11 +5,11 @@
 #
 #Provide buggers##############################################################
 # tmp.snr <- "0001"
-# tmp.ubb <- TRUE
+# tmp.ubb <- FALSE
 # tmp.ganztag <- FALSE
-# tmp.audience <- "ubb"
+# tmp.audience <- "sus"
 # tmp.stype <- "gy"
-# tmp.results <- "ubb"
+# tmp.results <- "sus"
 #
 # debugme(tmp.snr, tmp.ubb, tmp.ganztag, tmp.audience, tmp.stype, tmp.results)
 

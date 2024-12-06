@@ -4,10 +4,13 @@ geometry: "a4paper, margin=1in"
 output:
   pdf_document:
     latex_engine: xelatex
-    keep_tex: false
+    keep_tex: true
+    citation_package: none  
+    toc: false       
+    number_sections: false
 header-includes:
   - \usepackage{fontspec}
-  - \setmainfont{NotoSans-Regular.ttf}
+  - \setmainfont{NotoSans-Regular}
   - \setlength{\parindent}{0pt}
 lang: de-DE
 params:
@@ -26,10 +29,10 @@ knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE,
                       message = FALSE)
 
-flextable::set_flextable_defaults(fonts_ignore=TRUE)
-sysfonts::font_add("Gloria Hallelujah", "GloriaHallelujah-Regular.ttf")
-sysfonts::font_add("Noto Sans", "NotoSans-Regular.ttf")
-showtext::showtext_auto()
+# flextable::set_flextable_defaults(fonts_ignore=TRUE)
+# sysfonts::font_add("Gloria Hallelujah", "GloriaHallelujah-Regular.ttf")
+# sysfonts::font_add("Noto Sans", "NotoSans-Regular.ttf")
+# showtext::showtext_auto()
 
 
 

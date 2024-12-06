@@ -31,7 +31,7 @@ create_pdfs <- function (snr,
     results <- tmp.freitext
 
     rmarkdown::render(
-      input = paste0(tmp.dir_res, "/plots/template.Rmd"),
+      input = paste0(tmp.dir, "/plots/template.Rmd"),
       output_file = paste0(tmp.dir, "/", snr, "_results_", audience, ".pdf"),
       quiet = TRUE,
       params = list(
@@ -46,7 +46,7 @@ create_pdfs <- function (snr,
 
   if (ubb == FALSE) {
     rmarkdown::render(
-      input = here::here(tmp.dir_res, "plots/template.Rmd"),
+      input = here::here(tmp.dir, "plots/template.Rmd"),
       output_file = paste0(here::here(tmp.dir), "/", snr, "_results_", audience, ".pdf"),
       quiet = TRUE,
       params = list(

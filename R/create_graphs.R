@@ -109,7 +109,7 @@ export_plot = function (meta,
       bold_labels <- sapply(data$newlable, function(x) {
 
         # Wrap the entire label to fit within the axis (Markdown formatting still intact)
-        x <- stringr::str_wrap(x, width = 40)
+        x <- stringr::str_wrap(x, width = 45)
 
         # Replace Markdown newlines (\n) with HTML <br> tags for ggtext::element_markdown
         x <- stringr::str_replace_all(x, "\n", "<br>")
@@ -156,9 +156,9 @@ export_plot = function (meta,
           #legend.box.margin = ggplot2::margin(10, 10, 10, 10),
           legend.spacing.y = ggplot2::unit(0.5, "cm"),
           legend.key.size = ggplot2::unit(0.5, "lines"),
-          legend.text = ggplot2::element_text(size = 9, lineheight = 0.8),
+          legend.text = ggplot2::element_text(size = 10, lineheight = 0.8),
           #axis.text = ggplot2::element_text(size = 9),
-          axis.text = ggtext::element_markdown(size = 9),
+          axis.text = ggtext::element_markdown(size = 11),
           axis.text.y = ggplot2::element_text(hjust = 0))+
         ggplot2::labs(x = '', y = 'Prozent', fill = "") +
         ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1))

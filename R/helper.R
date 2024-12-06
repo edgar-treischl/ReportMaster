@@ -153,7 +153,9 @@ get_rmd3 <- function(meta, num_bars) {
 #' @return Character
 #' @export
 #'
-get_rmdX <- function(meta, num_bars) {
+get_rmdX <- function(meta,
+                     num_bars,
+                     header) {
 
   # Step 1: Ensure that meta and num_bars have the same length
   if (length(meta) != length(num_bars)) {
@@ -165,13 +167,14 @@ get_rmdX <- function(meta, num_bars) {
   rmd_chunks <- list()
 
   # Standard plot height
-  standard_height <- 5
+  standard_height <- 4
 
   # Step 3: Loop through the sequence and generate RMarkdown content
   for (x in seq_along(meta)) {
     # Access the correct num_bars for the current index
     plot_name <- meta[x]
     num_bars_x <- num_bars[x]
+    headerx <- header[x]
 
     # Handle cases where num_bars_x might be NULL or NA
     if (is.null(num_bars_x) || is.na(num_bars_x)) {
@@ -194,9 +197,11 @@ get_rmdX <- function(meta, num_bars) {
     fig_height <- max(fig_height, 3)
 
     # Create RMarkdown chunks
-    chunk1 <- paste0("```{r, results='asis'}\n",
-                     "cat(paste0('## ', header_report$header1[", x, "]))\n",
-                     "```")
+    chunk1 <- headerx
+
+    # chunk1 <- paste0("```{r, results='asis'}\n",
+    #                  "cat(paste0('## ', '", header1_x, "'[", x, "]))\n",
+    #                  "```")
 
     chunk2 <- paste0("```{r, fig.height=", fig_height, "}\n",
                      "knitr::include_graphics('plots/", plot_name, "_plot.pdf')\n",
@@ -234,6 +239,7 @@ get_rmdX <- function(meta, num_bars) {
 generate_rmd <- function(meta,
                          num_bars,
                          ubb,
+                         header,
                          export = TRUE,
                          file_name = "generated_document.Rmd") {
   # Read the template file content for the YAML header and any other template content
@@ -258,7 +264,8 @@ generate_rmd <- function(meta,
 
   # Example usage:
   #plots_report <- sub(".*#(.*)", "\\1", tmp.meta)
-  rmd_content <- get_rmdX(meta = meta, num_bars = num_bars)
+  rmd_content <- get_rmdX(meta = meta, num_bars = num_bars,
+                          header = header)
 
   # Combine the YAML header with the RMarkdown content
   full_rmd <- paste(yaml_header, rmd_content, sep = "\n\n")
@@ -772,6 +779,15 @@ run_Parallel <- function(snr,
   tmp.meta <- paste0("XX#", header_report$plot)
   tmp.count <- header_report$vars_count
 
+  if (!ubb) {
+    #Give the word cloud room to breathe
+    #headertxt <- paste0("## ", header_report$header1, "\n", "### ", header_report$header2, "\n\n")
+    headertxt <- paste0("## ", header_report$header1, ":", header_report$header2, "\n\n")
+
+  }else {
+    headertxt <- paste0("## ", header_report$header1, "\n\n")
+  }
+
   num_cores <- parallel::detectCores()
   workers <- max(1, num_cores - 1)  #
 
@@ -818,6 +834,7 @@ run_Parallel <- function(snr,
   generate_rmd(meta = tmp.meta,
                num_bars = tmp.count,
                ubb = ubb,
+               header = headertxt,
                file_name = paste0(tmp.dir, "/", "template.Rmd"))
 
   rmarkdown::render(
@@ -838,9 +855,9 @@ run_Parallel <- function(snr,
   # Filter out the PDF files
   files_to_delete <- all_files[!grepl("\\.pdf$", all_files, ignore.case = TRUE)]
   # Delete the non-PDF files
-  file.remove(files_to_delete)
-  dirs_to_delete <- here::here(tmp.dir, "plots")
-  unlink(dirs_to_delete, recursive = TRUE)
+  #file.remove(files_to_delete)
+  #dirs_to_delete <- here::here(tmp.dir, "plots")
+  #unlink(dirs_to_delete, recursive = TRUE)
 
   #Report via CLI if results are available:
   x <- paste0(tmp.dir, "/", snr, "_results_", audience, ".pdf")

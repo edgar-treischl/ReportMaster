@@ -12,7 +12,11 @@ output:
     df_print: paged
 header-includes:
   - \usepackage{fontspec}
-  - \setmainfont{NotoSans-Regular}
+  - \IfFontExistsTF{NotoSans-Regular}{
+      \setmainfont{NotoSans-Regular}[Contextuals={WordInitial,WordFinal}, BoldFont={*}, ItalicFont={*}]
+    }{
+      \setmainfont{Helvetica}[BoldFont={*}, ItalicFont={*}]
+    }
   - \setlength{\parindent}{0pt}
 lang: de-DE
 params:

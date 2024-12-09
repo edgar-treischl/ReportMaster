@@ -51,6 +51,25 @@ NULL
 #' @docType data
 NULL
 
+
+#' The headers reports data with all headers
+#'
+#' This data which headers are displayed by each plot of the survey.
+#'
+#' @format A data frame with 141 rows and 6 variables:
+#' \describe{
+#'   \item{sort}{The sorting}
+#'   \item{plot}{The plot name}
+#'   \item{header1}{The first header}
+#'   \item{header2}{The second header}
+#'   \item{timestamp}{Timestamp of creation}
+#'   \item{report}{Report type}
+#'   ...
+#' }
+#' @name header_reports
+#' @docType data
+NULL
+
 #' The Report Data
 #'
 #' This data all report templates.

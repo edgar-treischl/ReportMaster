@@ -8,6 +8,7 @@ generate_rmd(
   meta,
   num_bars,
   ubb,
+  header,
   export = TRUE,
   file_name = "generated_document.Rmd"
 )

@@ -769,7 +769,7 @@ run_Parallel <- function(snr,
 
   if (ubb) {
     #Give the word cloud room to breathe
-    plots_count$vars_count[plots_count$plot == "A3a"] <- 3
+    plots_count$vars_count[plots_count$plot == "A3a"] <- 6
   }
 
 
@@ -782,7 +782,7 @@ run_Parallel <- function(snr,
   if (!ubb) {
     #Give the word cloud room to breathe
     #headertxt <- paste0("## ", header_report$header1, "\n", "### ", header_report$header2, "\n\n")
-    headertxt <- paste0("## ", header_report$header1, ":", header_report$header2, "\n\n")
+    headertxt <- paste0("## ", header_report$header1, ": ", header_report$header2, "\n\n")
 
   }else {
     headertxt <- paste0("## ", header_report$header1, "\n\n")
@@ -1011,6 +1011,26 @@ export_headers <- function (meta,
     dplyr::arrange(sort)
 
   return(headers_df)
+}
+
+
+#' Get Rid of Blankspace
+#' @description Helper function to get rid of blankspace. Run steps manually.
+#'
+#' @return Alert.
+
+get_rid_of_blankspace <- function() {
+  cli::cli_alert("Run this function manually, supposed to update the header data.")
+
+  # header_reports$header1 <- stringr::str_trim(header_reports$header1)
+  # header_reports$header1 <- stringr::str_replace_all(header_reports$header1,
+  #                                                    pattern = "  ", " ")
+  #
+  # header_reports$header2 <- stringr::str_trim(header_reports$header2)
+  # header_reports$header2 <- stringr::str_replace_all(header_reports$header2,
+  #                                                    pattern = "  ", " ")
+  #
+  # usethis::use_data(header_reports, overwrite = TRUE)
 }
 
 

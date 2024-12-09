@@ -19,8 +19,22 @@ export_plot = function (meta,
                         export = TRUE) {
 
   #Load fonts
-  sysfonts::font_add("Noto Sans", "NotoSans-Regular.ttf")
-  showtext::showtext_auto()
+  font_name <- "Noto Sans"
+  font_path <- "NotoSans-Regular.ttf"
+
+  available_fonts <- sysfonts::font_files()
+
+  if (font_path %in% available_fonts$file) {
+    sysfonts::font_add("Noto Sans", "NotoSans-Regular.ttf")
+    showtext::showtext_auto()
+  }else {
+    font_name <- "sans"
+  }
+
+
+
+
+
 
   #Split meta list
   tmp.var <- stringr::str_split(meta,"#") |> unlist()
@@ -275,7 +289,7 @@ export_plot = function (meta,
         ggplot2::geom_label(
           ggplot2::aes(label = paste(as.character(anz), "\n", label_n), group = factor(vals)),
           position = ggplot2::position_stack(vjust = 0.5),
-          size = 2.8,
+          size = 3.5,
           fill = "white",
           colour = "black"
         ) +
@@ -295,15 +309,15 @@ export_plot = function (meta,
           labels = scales::number_format(accuracy = 1)  # Format labels as integers
         )+
         ggplot2::coord_flip() +
-        ggplot2::theme_minimal(base_size = 12) +
+        ggplot2::theme_minimal(base_size = 14) +
         ggplot2::theme(
           legend.position = "bottom",
           legend.box.margin = ggplot2::margin(10, 10, 10, 10),
           legend.spacing.y = ggplot2::unit(0.5, "cm"),
-          legend.key.size = ggplot2::unit(0.5, "lines"),
-          legend.text = ggplot2::element_text(size = 9),
+          legend.key.size = ggplot2::unit(.75, "lines"),
+          legend.text = ggplot2::element_text(size = 12),
           #axis.text = ggplot2::element_text(size = 9),
-          axis.text = ggtext::element_markdown(size = 9),
+          axis.text = ggtext::element_markdown(size = 16),
           axis.text.y = ggplot2::element_text(hjust = 0)
         ) +
         ggplot2::labs(x = '', y = 'Anzahl', fill = "")
@@ -322,14 +336,27 @@ export_plot = function (meta,
 
   if (export == TRUE) {
 
-    height_plot <- 148
+    # height_plot <- 8.27
+    #
+    # if (tmp.var_plot == 2) {
+    #   height_plot <- 100
+    # }
+    #
+    # if (tmp.var_plot == 1) {
+    #   height_plot <- 80
+    # }
 
-    if (tmp.var_plot == 2) {
-      height_plot <- 100
-    }
+    min_height <- 4  # Minimum height in inches (for tmp.var_plot == 1)
+    max_height <- 8.27  # Maximum height in inches (for tmp.var_plot == 5)
 
-    if (tmp.var_plot == 1) {
-      height_plot <- 80
+    # Scale height based on the number of bars (tmp.var_plot)
+    # Scale height based on the number of bars (tmp.var_plot)
+    # If tmp.var_plot is greater than 5, just set height to max_height
+    if (tmp.var_plot > 5) {
+      height_plot <- max_height  # If tmp.var_plot > 5, directly assign max_height
+    } else {
+      # Otherwise, calculate height based on the number of bars
+      height_plot <- min_height + (max_height - min_height) * (tmp.var_plot - 1) / 4
     }
 
 
@@ -338,14 +365,22 @@ export_plot = function (meta,
 
     tmp.dir <- get_directory(snr = snr)
 
-    ggplot2::ggsave(paste0(tmp.plotid,'_plot.pdf'),
-                    path =  paste0(tmp.dir, "/plots"),
+    # ggplot2::ggsave(paste0(tmp.plotid,'_plot.pdf'),
+    #                 path =  paste0(tmp.dir, "/plots"),
+    #                 plot = tmp.p,
+    #                 width = 210,
+    #                 height = height_plot,
+    #                 dpi = 300,
+    #                 units = "mm"
+    # )
+
+    ggplot2::ggsave(paste0(tmp.plotid, '_plot.pdf'),
+                    path = paste0(tmp.dir, "/plots"),
                     plot = tmp.p,
-                    width = 210,
+                    width = 11.69,  #
                     height = height_plot,
                     dpi = 300,
-                    units = "mm"
-    )
+                    units = "in")
 
     usethis::ui_done("Export plot: {usethis::ui_value(tmp.plotid)}")
   }
@@ -426,17 +461,30 @@ createWordCloud <- function(data) {
   word_count <- df |>
     dplyr::count(Angabe, sort = TRUE)
 
-  sysfonts::font_add("Gloria Hallelujah", "GloriaHallelujah-Regular.ttf")
-  showtext::showtext_auto()
+
+  font_name <- "Gloria Hallelujah"
+  font_path <- "GloriaHallelujah-Regular.ttf"
+
+  available_fonts <- sysfonts::font_files()
+
+  if (font_path %in% available_fonts$file) {
+    sysfonts::font_add("Gloria Hallelujah", "GloriaHallelujah-Regular.ttf")
+    showtext::showtext_auto()
+  }else {
+    font_name <- "sans"
+  }
+
+  #sysfonts::font_add("Gloria Hallelujah", "GloriaHallelujah-Regular.ttf")
+  #showtext::showtext_auto()
 
   tmp.p <- ggplot2::ggplot(word_count,
                            ggplot2::aes(label = Angabe,
                                         size = n)) +
     #ggwordcloud::geom_text_wordcloud() +
-    ggwordcloud::geom_text_wordcloud_area(color = "black",
-                                          family="Gloria Hallelujah",
+    ggwordcloud::geom_text_wordcloud_area(family=font_name,
+                                          color = "black",
                                           rm_outside = FALSE) +
-    ggplot2::scale_size_area(max_size = 24, trans = ggwordcloud::power_trans(1/.7)) +
+    ggplot2::scale_size_area(max_size = 36, trans = ggwordcloud::power_trans(1/.7)) +
     ggplot2::theme_minimal()
 
   return(tmp.p)

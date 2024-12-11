@@ -4,7 +4,7 @@
 #
 # plots_report <- sub(".*#(.*)", "\\1", tmp.meta)
 #
-# tmp.plotid <- plots_report[23]
+# tmp.plotid <- plots_report[2]
 #
 # tmp.tab <- plotGetData(data = tmp.data,
 #                        plotid = tmp.plotid,
@@ -104,7 +104,7 @@
 #     width = 0.5
 #   ) +
 #   ggplot2::geom_label(
-#     ggplot2::aes(label = paste0(label_n, "\n", "(", anz, ")"), group = factor(vals)),
+#     ggplot2::aes(label = ifelse(p > 3,  paste0(label_n, "\n", "(", anz, ")"), "*"), group = factor(vals)),
 #     position = ggplot2::position_stack(vjust = 0.5),
 #     size = 2.8,
 #     fill = "white",
@@ -130,25 +130,26 @@
 #     #axis.text = ggplot2::element_text(size = 9),
 #     axis.text = ggtext::element_markdown(size = 9),
 #     axis.text.y = ggplot2::element_text(hjust = 0))+
-#     ggplot2::labs(x = '', y = 'Prozent', fill = "") +
+#     ggplot2::labs(x = '', y = 'Prozent', fill = "", caption = "*: Numerische Werte kleiner 3 Prozent werden aufgrund verbesserter Lesbarkeit nicht grafisch dargestellt.") +
 #     ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1))
 #
 # tmp.p
-#
-#
-#
-#
-#
-#
-#
-# #UBB
-# data$newlable <- data$label_short
-# data$newlable <- as.factor(data$newlable)
-# data$newlable <- stringr::str_replace(data$newlable, " ", ": ")
-#
-#
-#
-#
+# #
+# #
+# #
+# #
+# #
+# #
+# #
+# # #UBB#################
+# # data$newlable <- data$label_short
+# # data$newlable <- as.factor(data$newlable)
+# # data$newlable <- stringr::str_replace(data$newlable, " ", ": ")
+# #
+# # data |>
+# #   dplyr::filter(vars == "A114 (ubb)")
+# #
+# #
 # # tmp.p <- ggplot2::ggplot(data, ggplot2::aes(fill = vals, y = anz, x = newlable)) +
 # #   ggplot2::geom_bar(
 # #     stat = 'identity',
@@ -156,7 +157,7 @@
 # #     width = 0.5
 # #   ) +
 # #   ggplot2::geom_label(
-# #     ggplot2::aes(label = paste(as.character(anz), "\n", label_n), group = factor(vals)),
+# #     ggplot2::aes(label =  ifelse(anz > 1, paste(as.character(anz), "\n", label_n), "*"), group = factor(vals)),
 # #     position = ggplot2::position_stack(vjust = 0.5),
 # #     size = 2.8,
 # #     fill = "white",

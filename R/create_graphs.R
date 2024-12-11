@@ -148,7 +148,7 @@ export_plot = function (meta,
           width = 0.5
         ) +
         ggplot2::geom_label(
-          ggplot2::aes(label = paste0(label_n, "\n", "(", anz, ")"), group = factor(vals)),
+          ggplot2::aes(label = ifelse(p > 3,  paste0(label_n, "\n", "(", anz, ")"), "*"), group = factor(vals)),
           position = ggplot2::position_stack(vjust = 0.5),
           size = 2.8,
           fill = "white",
@@ -174,7 +174,7 @@ export_plot = function (meta,
           #axis.text = ggplot2::element_text(size = 9),
           axis.text = ggtext::element_markdown(size = 11),
           axis.text.y = ggplot2::element_text(hjust = 0))+
-        ggplot2::labs(x = '', y = 'Prozent', fill = "") +
+        ggplot2::labs(x = '', y = 'Prozent', fill = "", caption = "*: Numerische Werte kleiner 3 Prozent werden aufgrund verbesserter Lesbarkeit nicht grafisch dargestellt.") +
         ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1))
 
 
@@ -224,7 +224,7 @@ export_plot = function (meta,
       bold_labels <- sapply(data$newlable, function(x) {
 
         # Wrap the entire label to fit within the axis (Markdown formatting still intact)
-        x <- stringr::str_wrap(x, width = 40)
+        x <- stringr::str_wrap(x, width = 35)
 
         # Replace Markdown newlines (\n) with HTML <br> tags for ggtext::element_markdown
         x <- stringr::str_replace_all(x, "\n", "<br>")

@@ -1,0 +1,34 @@
+---
+title: "test"
+format: html
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+
+## Test Plot
+
+```{r, echo=FALSE}
+knitr::include_graphics("plots/Testplot.png")
+```
+
+<a href="plots/Testplot.png" download="Testplot.png">
+  <button style="
+    background-color: gray;  /* Dark gray background */
+    color: white;  /* White text */
+    padding: 6px 12px;  /* Small padding */
+    font-size: 12px;  /* Smaller font size */
+    border: none;  /* Remove border */
+    cursor: pointer;  /* Pointer on hover */
+    text-align: center;  /* Center text */
+    display: inline-block;  /* Align with content */
+    border-radius: 5px;  /* Rounded corners */
+    transition: background-color 0.3s;  /* Smooth background transition */
+    float: right;  /* Align button to the right */
+  ">
+    Download Image
+  </button>
+</a>
+

@@ -204,7 +204,7 @@ get_rmdX <- function(meta,
     #                  "```")
 
     chunk2 <- paste0("```{r, fig.height=", fig_height, "}\n",
-                     "knitr::include_graphics('plots/", plot_name, "_plot.png')\n",
+                     "knitr::include_graphics('plots/", plot_name, "_plot.pdf')\n",
                      "```")
 
     # chunk3 <- paste0("```{r}\n",
@@ -224,6 +224,9 @@ get_rmdX <- function(meta,
   # Return the full RMarkdown content
   return(rmd_content)
 }
+
+
+
 
 #' Generate the Rmd file for the report
 #' @description Functions combines the template and adds the Rmd content
@@ -799,7 +802,7 @@ run_Parallel <- function(snr,
   cli::cli_progress_step("Create plots", spinner = TRUE)
 
   # Generate the list of plots in parallel
-  plot_list <- furrr::future_map(tmp.meta, ~ export_plotHTML(
+  plot_list <- furrr::future_map(tmp.meta, ~ export_plot(
     meta = .x,
     snr = snr,
     audience = audience,
@@ -855,9 +858,9 @@ run_Parallel <- function(snr,
   # Filter out the PDF files
   files_to_delete <- all_files[!grepl("\\.pdf$", all_files, ignore.case = TRUE)]
   # Delete the non-PDF files
-  #file.remove(files_to_delete)
-  #dirs_to_delete <- here::here(tmp.dir, "plots")
-  #unlink(dirs_to_delete, recursive = TRUE)
+  file.remove(files_to_delete)
+  dirs_to_delete <- here::here(tmp.dir, "plots")
+  unlink(dirs_to_delete, recursive = TRUE)
 
   #Report via CLI if results are available:
   x <- paste0(tmp.dir, "/", snr, "_results_", audience, ".pdf")

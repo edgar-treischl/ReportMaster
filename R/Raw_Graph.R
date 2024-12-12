@@ -97,7 +97,9 @@
 #
 # data
 #
-# tmp.p <- ggplot2::ggplot(data, ggplot2::aes(fill = vals, y = p, x = newlable)) +
+#
+#
+# tmp.p <- ggplot2::ggplot(data, ggplot2::aes(fill = vals, y = p, x = forcats::fct_rev(data$newlable))) +
 #   ggplot2::geom_bar(
 #     stat = 'identity',
 #     position = ggplot2::position_stack(),
@@ -118,7 +120,8 @@
 #   ) +
 #   ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(n.dodge = 1),
 #                             labels = bold_labels,
-#                             limits = rev(levels(data$newlable))) +
+#                             limits = levels(forcats::fct_rev(data$newlable))
+#                             ) +
 #   ggplot2::coord_flip() +
 #   ggplot2::theme_minimal(base_size = 12) +
 #   ggplot2::theme(
@@ -131,66 +134,8 @@
 #     axis.text = ggtext::element_markdown(size = 9),
 #     axis.text.y = ggplot2::element_text(hjust = 0))+
 #     ggplot2::labs(x = '', y = 'Prozent', fill = "", caption = "*: Numerische Werte kleiner 3 Prozent werden aufgrund verbesserter Lesbarkeit nicht grafisch dargestellt.") +
-#     ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1))
+#     ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1))+
+#   las_theme
 #
 # tmp.p
-# #
-# #
-# #
-# #
-# #
-# #
-# #
-# # #UBB#################
-# # data$newlable <- data$label_short
-# # data$newlable <- as.factor(data$newlable)
-# # data$newlable <- stringr::str_replace(data$newlable, " ", ": ")
-# #
-# # data |>
-# #   dplyr::filter(vars == "A114 (ubb)")
-# #
-# #
-# # tmp.p <- ggplot2::ggplot(data, ggplot2::aes(fill = vals, y = anz, x = newlable)) +
-# #   ggplot2::geom_bar(
-# #     stat = 'identity',
-# #     position = ggplot2::position_stack(),
-# #     width = 0.5
-# #   ) +
-# #   ggplot2::geom_label(
-# #     ggplot2::aes(label =  ifelse(anz > 1, paste(as.character(anz), "\n", label_n), "*"), group = factor(vals)),
-# #     position = ggplot2::position_stack(vjust = 0.5),
-# #     size = 2.8,
-# #     fill = "white",
-# #     colour = "black"
-# #   ) +
-# #   ggplot2::scale_fill_manual(
-# #     breaks = rev(tmp.item.labels$labels),
-# #     values = rev(tmp.item.labels$colors),
-# #     drop = TRUE,
-# #     labels = function(x) stringr::str_wrap(x, width = 12)  # Wrap legend text
-# #   ) +
-# #   ggplot2::scale_x_discrete(
-# #     guide = ggplot2::guide_axis(n.dodge = 1),
-# #     labels = function(x) stringr::str_wrap(x, width = 40),
-# #     limits = rev(levels(data$newlable))
-# #   ) +
-# #   ggplot2::scale_y_continuous(
-# #     breaks = function(x) scales::pretty_breaks()(x) |> round(),  # Apply rounding to the breaks
-# #     labels = scales::number_format(accuracy = 1)  # Format labels as integers
-# #   )+
-# #   # ggplot2::scale_y_continuous(breaks = scales::breaks_pretty()) +
-# #   ggplot2::coord_flip() +
-# #   ggplot2::theme_minimal(base_size = 12) +
-# #   ggplot2::theme(
-# #     legend.position = "bottom",
-# #     #legend.box.margin = ggplot2::margin(10, 10, 10, 10),
-# #     legend.spacing.y = ggplot2::unit(0.5, "cm"),
-# #     legend.key.size = ggplot2::unit(0.5, "lines"),
-# #     legend.text = ggplot2::element_text(size = 9),
-# #     axis.text = ggplot2::element_text(size = 9),
-# #     axis.text.y = ggplot2::element_text(hjust = 0)
-# #   ) +
-# #   ggplot2::labs(x = '', y = 'Anzahl', fill = "")
-# #
-# # tmp.p
 #

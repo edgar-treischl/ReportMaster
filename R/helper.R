@@ -204,7 +204,7 @@ get_rmdX <- function(meta,
     #                  "```")
 
     chunk2 <- paste0("```{r, fig.height=", fig_height, "}\n",
-                     "knitr::include_graphics('plots/", plot_name, "_plot.pdf')\n",
+                     "knitr::include_graphics('plots/", plot_name, "_plot.png')\n",
                      "```")
 
     # chunk3 <- paste0("```{r}\n",
@@ -799,7 +799,7 @@ run_Parallel <- function(snr,
   cli::cli_progress_step("Create plots", spinner = TRUE)
 
   # Generate the list of plots in parallel
-  plot_list <- furrr::future_map(tmp.meta, ~ export_plot(
+  plot_list <- furrr::future_map(tmp.meta, ~ export_plotHTML(
     meta = .x,
     snr = snr,
     audience = audience,

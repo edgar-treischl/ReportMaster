@@ -38,8 +38,15 @@
 # tmp.n <- tmp.sids.df$completed_responses[which_n]
 # return(tmp.n)
 #
+# tmp.sids.df$sus <- stringr::str_detect(tmp.sids.df$surveyls_title, tmp.audience)
 #
+# tmp.sids.df <- tmp.sids.df |>
+#   dplyr::filter(sus == TRUE) |>
+#   dplyr::arrange(surveyls_title) |>
+#   dplyr::select(surveyls_title, completed_responses) |>
+#   dplyr::mutate(n_group = c("GS", "GM", "GS Ganztag", "GM Ganztag"))
 #
+# paste0(tmp.sids.df$completed_responses, " (", tmp.sids.df$n_group, ")")
 #
 # master_to_template <- MetaMaster::DB_Table("master_to_template")
 # View(master_to_template)

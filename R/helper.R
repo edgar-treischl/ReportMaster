@@ -856,11 +856,11 @@ run_Parallel <- function(snr,
   # List all files in the directory (without full paths)
   all_files <- list.files(tmp.dir, full.names = TRUE, recursive = TRUE)
   # Filter out the PDF files
-  files_to_delete <- all_files[!grepl("\\.pdf$", all_files, ignore.case = TRUE)]
+  #files_to_delete <- all_files[!grepl("\\.pdf$", all_files, ignore.case = TRUE)]
   # Delete the non-PDF files
-  file.remove(files_to_delete)
-  dirs_to_delete <- here::here(tmp.dir, "plots")
-  unlink(dirs_to_delete, recursive = TRUE)
+  #file.remove(files_to_delete)
+  #dirs_to_delete <- here::here(tmp.dir, "plots")
+  #unlink(dirs_to_delete, recursive = TRUE)
 
   #Report via CLI if results are available:
   x <- paste0(tmp.dir, "/", snr, "_results_", audience, ".pdf")
@@ -869,9 +869,9 @@ run_Parallel <- function(snr,
     usethis::ui_done("Exported PDF file for school {usethis::ui_value(snr)} and group {usethis::ui_value(audience)}")
   }
 
-  if (interactive() == TRUE) {
-    invisible(system(paste0('open ', x)))
-  }
+  # if (interactive() == TRUE) {
+  #   invisible(system(paste0('open ', x)))
+  # }
 
 
 }

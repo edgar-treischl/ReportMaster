@@ -1,0 +1,124 @@
+---
+title: " "
+output: 
+  html_document:
+    theme:
+      version: 5
+      bootswatch: flatly
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(rmdformats)
+library(ReportMaster)
+library(bslib)
+#library(shiny)
+
+# Set environment and initialize parameters
+Sys.setenv(R_CONFIG_ACTIVE = "default")
+tmp.snr <- "8934"
+tmp.ubb <- FALSE
+tmp.audience <- "sus"
+tmp.results <- "sus"
+tmp.stype <- "gm"
+tmp.ganztag <- FALSE
+
+plots_dir <- here::here("res", "8934_2024", "plots")
+# Get school name
+schoolname <- get_sname(snr = tmp.snr)
+
+# Get list of plot files
+plot_files <- list.files(plots_dir, pattern = "*.png", full.names = FALSE)
+plot_files <- paste0("res/8934_2024/plots/", plot_files) 
+plot_names <- tools::file_path_sans_ext(basename(plot_files))
+
+library(htmltools)
+
+
+htmltools::tags$head(
+  htmltools::tags$link(
+    rel = "stylesheet",
+    href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  )
+)
+
+html_dependency <- tags$script(
+  HTML(
+    paste0("
+      var basePath = 'res/', 
+          snr = '", tmp.snr, "',
+          year = '2024',
+          plotsDir = 'plots/';
+    ")
+  )
+)
+
+# Add Font Awesome link to the document's head for icons
+
+```
+
+
+
+
+
+```{r, echo=FALSE}
+
+library(htmltools)
+library(bslib)
+
+
+
+
+# Generate the HTML content for sidebar and main content dynamically
+
+card(
+  full_screen = TRUE,
+  layout_sidebar(
+    fillable = TRUE,
+    sidebar = sidebar(
+      width = "25%",
+      tags$h3(schoolname),
+      tags$small(paste("School ID:", tmp.snr)),
+      tags$br(),
+      tags$h5("Please select a plot:"),
+      tags$select(id = "image_select", class = "form-control",
+                    tags$option(value = plot_names[1], plot_names[1]),
+                    lapply(plot_names[-1], function(x) tags$option(value = x, x))),
+      tags$br(),
+      tags$h5("Download the full report:"),
+      tags$a(href = "res/8934_2024/8934_results_sus.pdf", class = "btn btn-success",
+             target = "_blank", tags$i(class = "fa fa-file-pdf", style = "margin-right: 8px;"), "PDF")
+    ),
+    card(
+      width = "75%",
+      full_screen = TRUE,  # Allow the card to expand if needed
+      card_header("Selected Item:"),
+      card_body(
+        tags$img(id = "selected-image",
+                 src = plot_files[1],
+                 alt = "Selected Plot",
+                 style = "max-width: 100%; height: auto;")
+      )
+    )
+
+  )
+)
+
+
+
+
+tagList(html_dependency, 
+        tags$script(src = "www/javascript.js"))
+
+
+
+```
+
+
+
+
+
+
+
+
+

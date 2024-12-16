@@ -1,10 +1,14 @@
 ---
-title: " "
+title: "Ergebnisse"
 output: 
   html_document:
     theme:
       version: 5
       bootswatch: flatly
+    css: "www/mycss.css"
+    includes:
+      in_header:
+        - header.html
 ---
 
 ```{r, include=FALSE}
@@ -23,6 +27,14 @@ tmp.results <- "sus"
 tmp.stype <- "gm"
 tmp.ganztag <- FALSE
 
+audience <- switch(tmp.audience,
+         "sus" = "Schülerinnen und Schüler",  
+         "leh" = "Lehrkräfte",  
+         "elt" = "Eltern",  
+         "aus" = "Ausbilder",  
+         tmp.audience 
+  )
+
 plots_dir <- here::here("res", "8934_2024", "plots")
 # Get school name
 schoolname <- get_sname(snr = tmp.snr)
@@ -35,12 +47,12 @@ plot_names <- tools::file_path_sans_ext(basename(plot_files))
 library(htmltools)
 
 
-htmltools::tags$head(
-  htmltools::tags$link(
-    rel = "stylesheet",
-    href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-  )
-)
+# htmltools::tags$head(
+#   htmltools::tags$link(
+#     rel = "stylesheet",
+#     href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+#   )
+# )
 
 html_dependency <- tags$script(
   HTML(
@@ -78,21 +90,23 @@ card(
     sidebar = sidebar(
       width = "25%",
       tags$h3(schoolname),
-      tags$small(paste("School ID:", tmp.snr)),
+      tags$p(paste("Befragtengruppe:", audience)),
+      tags$p(paste("Befragungszeitpunkt:",  format(Sys.Date(), "%Y"))),
       tags$br(),
-      tags$h5("Please select a plot:"),
+      tags$h5("Bitte wählen Sie eine Abbildung aus:"),
       tags$select(id = "image_select", class = "form-control",
                     tags$option(value = plot_names[1], plot_names[1]),
                     lapply(plot_names[-1], function(x) tags$option(value = x, x))),
       tags$br(),
-      tags$h5("Download the full report:"),
+      tags$h5("Download der Gesamtergebnisse:"),
       tags$a(href = "res/8934_2024/8934_results_sus.pdf", class = "btn btn-success",
-             target = "_blank", tags$i(class = "fa fa-file-pdf", style = "margin-right: 8px;"), "PDF")
+             target = "_blank", tags$i(class = "fa-solid fa-file-pdf", 
+                                       style = "margin-right: 8px;"), "PDF")
     ),
     card(
       width = "75%",
       full_screen = TRUE,  # Allow the card to expand if needed
-      card_header("Selected Item:"),
+      card_header(paste("Abbildung:", plot_names[1])),
       card_body(
         tags$img(id = "selected-image",
                  src = plot_files[1],
@@ -106,19 +120,9 @@ card(
 
 
 
-
 tagList(html_dependency, 
         tags$script(src = "www/javascript.js"))
 
-
-
 ```
-
-
-
-
-
-
-
 
 

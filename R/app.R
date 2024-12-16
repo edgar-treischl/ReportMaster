@@ -29,7 +29,7 @@ initial_report_path <- base::file.path("res", base::paste0(tmp.snr, "_2024"),
 initial_report_exists <- base::file.exists(initial_report_path)
 
 ui <- bslib::page_sidebar(
-  title = "Report Plots Viewer",
+  title = "OES Report Viewer",
 
   sidebar = bslib::sidebar(
     width = "33%",
@@ -44,11 +44,10 @@ ui <- bslib::page_sidebar(
       shiny::div(
         class = "p-3",
         shiny::h4(schoolname),
-        shiny::tags$small(
-          class = "text-muted",
-          base::paste("School ID:", tmp.snr)
+        shiny::tags$small(class = "text-muted", base::paste("Befragung:", tmp.audience)),
+        shiny::tags$br(),
+        shiny::tags$small(class = "text-muted", base::paste("N:", tmp.n[1]))
         )
-      )
     ),
 
     # Plot selection dropdown
@@ -157,7 +156,7 @@ server <- function(input, output, session) {
     } else {
       bslib::accordion(
         bslib::accordion_panel(
-          "About this Plot",
+          "About ...",
           shiny::p("This plot shows specific analysis results for your school.",
                    "Select different plots from the dropdown to explore various aspects",
                    "of the data.")

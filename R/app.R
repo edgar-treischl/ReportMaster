@@ -24,76 +24,76 @@ get_parameter(
 schoolname <- get_sname(snr = tmp.snr)
 
 # Check if report already exists
-initial_report_path <- file.path("res", paste0(tmp.snr, "_2024"),
-                                 paste0(tmp.snr, "_results_", tmp.audience, ".pdf"))
-initial_report_exists <- file.exists(initial_report_path)
+initial_report_path <- base::file.path("res", base::paste0(tmp.snr, "_2024"),
+                                       base::paste0(tmp.snr, "_results_", tmp.audience, ".pdf"))
+initial_report_exists <- base::file.exists(initial_report_path)
 
-ui <- page_sidebar(
+ui <- bslib::page_sidebar(
   title = "Report Plots Viewer",
 
-  sidebar = sidebar(
+  sidebar = bslib::sidebar(
     width = "33%",
 
     # School information at the top of sidebar
-    card(
+    bslib::card(
       class = "mb-3",
-      card_header(
+      bslib::card_header(
         "School Information",
         class = "bg-light"
       ),
-      div(
+      shiny::div(
         class = "p-3",
-        h4(schoolname),
-        tags$small(
+        shiny::h4(schoolname),
+        shiny::tags$small(
           class = "text-muted",
-          paste("School ID:", tmp.snr)
+          base::paste("School ID:", tmp.snr)
         )
       )
     ),
 
     # Plot selection dropdown
-    selectInput("selected_plot", "Select Plot:",
-                choices = tmp.meta,
-                selected = tmp.meta[1]),
+    shiny::selectInput("selected_plot", "Select Plot:",
+                       choices = tmp.meta,
+                       selected = tmp.meta[1]),
 
-    downloadButton("download", "Download Plot", class = "btn-standard w-100"),
+    shiny::downloadButton("download", "Download Plot", class = "btn-standard w-100"),
 
-    hr(),
+    shiny::hr(),
 
-    uiOutput("generate_report_ui"),
-    uiOutput("progress_ui"),
-    uiOutput("download_report_ui")
+    shiny::uiOutput("generate_report_ui"),
+    shiny::uiOutput("progress_ui"),
+    shiny::uiOutput("download_report_ui")
   ),
 
   # Main panel with tabs for plot and information
-  navset_card_tab(
+  bslib::navset_card_tab(
     full_screen = TRUE,
-    nav_panel(
+    bslib::nav_panel(
       "Plot",
-      uiOutput("dynamic_card_header"),
-      plotOutput("plot1")
+      shiny::uiOutput("dynamic_card_header"),
+      shiny::plotOutput("plot1")
     ),
-    nav_panel(
+    bslib::nav_panel(
       "Information",
-      uiOutput("plot_explanation_accordion")
+      shiny::uiOutput("plot_explanation_accordion")
     )
   )
 )
 
 server <- function(input, output, session) {
   # Initialize reactive values
-  report_available <- reactiveVal(initial_report_exists)
-  is_running <- reactiveVal(FALSE)
+  report_available <- shiny::reactiveVal(initial_report_exists)
+  is_running <- shiny::reactiveVal(FALSE)
 
   # Dynamic card header for plot
-  output$dynamic_card_header <- renderUI({
-    req(input$selected_plot)
-    card_header(input$selected_plot)
+  output$dynamic_card_header <- shiny::renderUI({
+    shiny::req(input$selected_plot)
+    bslib::card_header(input$selected_plot)
   })
 
   # Generate plot function
   generate_plot <- function() {
-    export_plot(
+    ReportMaster::export_plot(
       meta = input$selected_plot,
       snr = tmp.snr,
       audience = tmp.audience,
@@ -105,82 +105,80 @@ server <- function(input, output, session) {
   }
 
   # Display the plot
-  output$plot1 <- renderPlot({
-    req(input$selected_plot)
+  output$plot1 <- shiny::renderPlot({
+    shiny::req(input$selected_plot)
     generate_plot()
   })
 
   # Add new output for plot explanations with accordion
-  output$plot_explanation_accordion <- renderUI({
-    req(input$selected_plot)
+  output$plot_explanation_accordion <- shiny::renderUI({
+    shiny::req(input$selected_plot)
 
     # Create a named list of explanations for each plot type
-    explanations <- list(
-      "plot1" = list(
+    explanations <- base::list(
+      "plot1" = base::list(
         purpose = "This plot shows the distribution of student performance.",
         interpretation = "The x-axis represents score ranges, while the y-axis shows frequency.",
-        key_points = tags$ul(
-          tags$li("Peaks indicate common score ranges"),
-          tags$li("Wide distribution suggests varied performance"),
-          tags$li("Compare with reference lines for context")
+        key_points = shiny::tags$ul(
+          shiny::tags$li("Peaks indicate common score ranges"),
+          shiny::tags$li("Wide distribution suggests varied performance"),
+          shiny::tags$li("Compare with reference lines for context")
         )
       ),
-      "plot2" = list(
+      "plot2" = base::list(
         purpose = "Comparative analysis of different subject areas.",
         interpretation = "Compare performance across different subjects and identify patterns.",
-        key_points = tags$ul(
-          tags$li("Each bar represents a subject area"),
-          tags$li("Height indicates average performance"),
-          tags$li("Error bars show confidence intervals")
+        key_points = shiny::tags$ul(
+          shiny::tags$li("Each bar represents a subject area"),
+          shiny::tags$li("Height indicates average performance"),
+          shiny::tags$li("Error bars show confidence intervals")
         )
       )
     )
 
-    # Get the explanation for the current plot
     current_explanation <- explanations[[input$selected_plot]]
 
-    if (!is.null(current_explanation)) {
-      accordion(
-        accordion_panel(
+    if (!base::is.null(current_explanation)) {
+      bslib::accordion(
+        bslib::accordion_panel(
           "Purpose",
-          p(current_explanation$purpose)
+          shiny::p(current_explanation$purpose)
         ),
-        accordion_panel(
+        bslib::accordion_panel(
           "How to Interpret",
-          p(current_explanation$interpretation)
+          shiny::p(current_explanation$interpretation)
         ),
-        accordion_panel(
+        bslib::accordion_panel(
           "Key Points",
           current_explanation$key_points
         ),
-        multiple = TRUE  # Allow multiple panels to be open simultaneously
+        multiple = TRUE
       )
     } else {
-      # Default accordion for plots without specific explanations
-      accordion(
-        accordion_panel(
+      bslib::accordion(
+        bslib::accordion_panel(
           "About this Plot",
-          p("This plot shows specific analysis results for your school.",
-            "Select different plots from the dropdown to explore various aspects",
-            "of the data.")
+          shiny::p("This plot shows specific analysis results for your school.",
+                   "Select different plots from the dropdown to explore various aspects",
+                   "of the data.")
         )
       )
     }
   })
 
   # Generate Report UI
-  output$generate_report_ui <- renderUI({
+  output$generate_report_ui <- shiny::renderUI({
     if (!report_available()) {
-      div(
-        actionButton("generate_report",
-                     label = span(
-                       icon("file-pdf"),
-                       "Generate Report"
-                     ),
-                     class = "btn-primary w-100"),
-        div(
+      shiny::div(
+        shiny::actionButton("generate_report",
+                            label = shiny::span(
+                              shiny::icon("file-pdf"),
+                              "Generate Report"
+                            ),
+                            class = "btn-primary w-100"),
+        shiny::div(
           style = "margin-top: 5px; font-size: 0.8em; color: #666;",
-          icon("clock"),
+          shiny::icon("clock"),
           "This process may take several minutes"
         )
       )
@@ -188,70 +186,70 @@ server <- function(input, output, session) {
   })
 
   # Download handler for plots
-  output$download <- downloadHandler(
+  output$download <- shiny::downloadHandler(
     filename = function() {
-      paste0("plot-", input$selected_plot, ".png")
+      base::paste0("plot-", input$selected_plot, ".png")
     },
     content = function(file) {
-      tryCatch({
-        png(file, width = 8, height = 6, units = "in", res = 150)
-        print(generate_plot())
-        dev.off()
+      base::tryCatch({
+        grDevices::png(file, width = 8, height = 6, units = "in", res = 150)
+        base::print(generate_plot())
+        grDevices::dev.off()
       }, error = function(e) {
-        if(dev.cur() > 1) dev.off()
-        stop("Error generating plot: ", e$message)
+        if(grDevices::dev.cur() > 1) grDevices::dev.off()
+        base::stop("Error generating plot: ", e$message)
       })
     },
     contentType = "image/png"
   )
 
   # Progress UI
-  output$progress_ui <- renderUI({
+  output$progress_ui <- shiny::renderUI({
     if (is_running()) {
-      div(
+      shiny::div(
         style = "margin-top: 15px;",
-        div(class = "text-center",
-            tags$i(class = "fa fa-spinner fa-spin fa-2x"),
-            tags$p("Generating report...")
+        shiny::div(class = "text-center",
+                   shiny::tags$i(class = "fa fa-spinner fa-spin fa-2x"),
+                   shiny::tags$p("Generating report...")
         )
       )
     }
   })
 
   # Download Report UI
-  output$download_report_ui <- renderUI({
+  output$download_report_ui <- shiny::renderUI({
     if (report_available()) {
-      div(
+      shiny::div(
         style = "margin-top: 15px;",
-        downloadButton("download_report", "Download Report", class = "btn-success w-100")
+        shiny::downloadButton("download_report", "Download Report", class = "btn-success w-100")
       )
     }
   })
 
   # Download handler for report
-  output$download_report <- downloadHandler(
+  output$download_report <- shiny::downloadHandler(
     filename = function() {
-      paste0(tmp.snr, "_results_", tmp.audience, ".pdf")
+      base::paste0(tmp.snr, "_results_", tmp.audience, ".pdf")
     },
     content = function(file) {
-      report_path <- file.path("res", paste0(tmp.snr, "_2024"),
-                               paste0(tmp.snr, "_results_", tmp.audience, ".pdf"))
+      report_path <- base::file.path("res", base::paste0(tmp.snr, "_2024"),
+                                     base::paste0(tmp.snr, "_results_", tmp.audience, ".pdf"))
 
-      if (!file.exists(report_path)) {
-        stop("Report file not found at: ", report_path)
+      if (!base::file.exists(report_path)) {
+        base::stop("Report file not found at: ", report_path)
       }
-      file.copy(report_path, file)
+      base::file.copy(report_path, file)
     },
     contentType = "application/pdf"
   )
 
   # Handle report generation
-  observeEvent(input$generate_report, {
+  shiny::observeEvent(input$generate_report, {
     is_running(TRUE)
     report_available(FALSE)
 
-    tryCatch({
-      run_Parallel(
+    base::tryCatch({
+      ReportMaster::run_Parallel(
         snr = tmp.snr,
         audience = tmp.audience,
         stype = tmp.stype,
@@ -261,17 +259,17 @@ server <- function(input, output, session) {
       )
       is_running(FALSE)
       report_available(TRUE)
-      showNotification("Report generation completed!", type = "message")
+      shiny::showNotification("Report generation completed!", type = "message")
     },
     error = function(e) {
       is_running(FALSE)
       report_available(FALSE)
-      showNotification(
-        paste("Error generating report:", e$message),
+      shiny::showNotification(
+        base::paste("Error generating report:", e$message),
         type = "error"
       )
     })
   })
 }
 
-shinyApp(ui, server)
+shiny::shinyApp(ui, server)

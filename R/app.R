@@ -48,8 +48,24 @@ ReportPreview <- function(snr, audience, ubb, ganztag, stype) {
                                          base::paste0(snr, "_results_", audience, ".pdf"))
   initial_report_exists <- base::file.exists(initial_report_path)
 
+  md_path <- system.file(
+    "app/app_txt.md",  # Path relative to inst/
+    package = "ReportMaster" # Your package name
+  )
+
+
+  # If file doesn't exist, create a temporary file with fallback content
+  if (md_path == "") {
+    warning("Could not find content.md in package, using fallback content")
+
+    fallback_content <- "# Could not find content.md in package"
+
+    md_path <- tempfile(fileext = ".md")
+    writeLines(fallback_content, md_path)
+  }
+
   ui <- bslib::page_sidebar(
-    title = "OES Report Viewer",
+    title = "OES Report View",
 
     sidebar = bslib::sidebar(
       width = "33%",
@@ -58,24 +74,24 @@ ReportPreview <- function(snr, audience, ubb, ganztag, stype) {
       bslib::card(
         class = "mb-3",
         bslib::card_header(
-          "School Information",
+          "Schule:",
           class = "bg-light"
         ),
-        shiny::div(
-          class = "p-3",
-          shiny::h4(tmp.name),
-          shiny::tags$small(class = "text-muted", base::paste("Befragung:", audience)),
+        bslib::card_body(
+          shiny::h2(tmp.name),
           shiny::tags$br(),
-          shiny::tags$small(class = "text-muted", base::paste("N:", tmp.n[1]))
+          shiny::h3(class = "text-muted", paste("Befragung:", audience)),
+          shiny::tags$br(),
+          shiny::h3(class = "text-muted", paste("N:", tmp.n[1]))
         )
       ),
 
       # Plot selection dropdown
-      shiny::selectInput("selected_plot", "Select Plot:",
+      shiny::selectInput("selected_plot", "Bitte Plot auswählen:",
                          choices = tmp.meta,
                          selected = tmp.meta[1]),
 
-      shiny::downloadButton("download", "Download Plot", class = "btn-standard w-100"),
+      shiny::downloadButton("download", "Download Abbildung", class = "btn-standard w-100"),
 
       shiny::hr(),
 
@@ -88,13 +104,13 @@ ReportPreview <- function(snr, audience, ubb, ganztag, stype) {
     bslib::navset_card_tab(
       full_screen = TRUE,
       bslib::nav_panel(
-        "Plot",
+        "Ergebnisse",
         shiny::uiOutput("dynamic_card_header"),
         shiny::plotOutput("plot1")
       ),
       bslib::nav_panel(
-        "Information",
-        shiny::uiOutput("plot_explanation_accordion")
+        "Allgemeine Informationen",
+        shiny::includeMarkdown(md_path)
       )
     )
   )
@@ -107,7 +123,17 @@ ReportPreview <- function(snr, audience, ubb, ganztag, stype) {
     # Dynamic card header for plot
     output$dynamic_card_header <- shiny::renderUI({
       shiny::req(input$selected_plot)
-      bslib::card_header(input$selected_plot)
+      plots_report <- sub(".*#(.*)", "\\1", input$selected_plot)
+
+      if (ubb) {
+        header_report <- plots_headers_ubb
+        header_report <- header_report |> dplyr::filter(plot == plots_report)
+      }else {
+        header_report <- plots_headers
+        header_report <- header_report |> dplyr::filter(plot == plots_report)
+      }
+
+      bslib::card_header(header_report$header1)
     })
 
     # Generate plot function
@@ -127,62 +153,6 @@ ReportPreview <- function(snr, audience, ubb, ganztag, stype) {
     output$plot1 <- shiny::renderPlot({
       shiny::req(input$selected_plot)
       generate_plot()
-    })
-
-    # Add new output for plot explanations with accordion
-    output$plot_explanation_accordion <- shiny::renderUI({
-      shiny::req(input$selected_plot)
-
-      # Create a named list of explanations for each plot type
-      explanations <- base::list(
-        "plot1" = base::list(
-          purpose = "This plot shows the distribution of student performance.",
-          interpretation = "The x-axis represents score ranges, while the y-axis shows frequency.",
-          key_points = shiny::tags$ul(
-            shiny::tags$li("Peaks indicate common score ranges"),
-            shiny::tags$li("Wide distribution suggests varied performance"),
-            shiny::tags$li("Compare with reference lines for context")
-          )
-        ),
-        "plot2" = base::list(
-          purpose = "Comparative analysis of different subject areas.",
-          interpretation = "Compare performance across different subjects and identify patterns.",
-          key_points = shiny::tags$ul(
-            shiny::tags$li("Each bar represents a subject area"),
-            shiny::tags$li("Height indicates average performance"),
-            shiny::tags$li("Error bars show confidence intervals")
-          )
-        )
-      )
-
-      current_explanation <- explanations[[input$selected_plot]]
-
-      if (!base::is.null(current_explanation)) {
-        bslib::accordion(
-          bslib::accordion_panel(
-            "Purpose",
-            shiny::p(current_explanation$purpose)
-          ),
-          bslib::accordion_panel(
-            "How to Interpret",
-            shiny::p(current_explanation$interpretation)
-          ),
-          bslib::accordion_panel(
-            "Key Points",
-            current_explanation$key_points
-          ),
-          multiple = TRUE
-        )
-      } else {
-        bslib::accordion(
-          bslib::accordion_panel(
-            "About ...",
-            shiny::p("This plot shows specific analysis results for your school.",
-                     "Select different plots from the dropdown to explore various aspects",
-                     "of the data.")
-          )
-        )
-      }
     })
 
     # Generate Report UI
@@ -240,7 +210,7 @@ ReportPreview <- function(snr, audience, ubb, ganztag, stype) {
       if (report_available()) {
         shiny::div(
           style = "margin-top: 15px;",
-          shiny::downloadButton("download_report", "Download Report", class = "btn-success w-100")
+          shiny::downloadButton("download_report", "PDF Report", class = "btn-success w-100")
         )
       }
     })
@@ -295,6 +265,8 @@ ReportPreview <- function(snr, audience, ubb, ganztag, stype) {
 
   shiny::shinyApp(ui, server)
 }
+
+#ReportPreview(snr = "8934", audience = "sus", ubb = FALSE, ganztag = FALSE, stype = "gm")
 
 
 

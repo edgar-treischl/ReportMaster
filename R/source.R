@@ -994,7 +994,8 @@ get_parameter <- function (snr,
 
   #Get name of school
   tmp.name <- get_sname(snr)
-  assign("tmp.name", value = tmp.name, envir=globalenv())
+
+  #assign("tmp.name", value = tmp.name, envir=globalenv())
   cli::cli_alert_info("Get parameters for: {tmp.name}")
 
 
@@ -1046,27 +1047,27 @@ get_parameter <- function (snr,
   #assign("tmp.survey", value = tmp.survey, envir=globalenv())
 
   tmp.report <- rprtpckg_list[[3]]
-  assign("tmp.report", value = tmp.report, envir=globalenv())
+  #assign("tmp.report", value = tmp.report, envir=globalenv())
 
 
 
   #Error if data is not available:
   tmp.data <- surveyGetDataLongformat(ids = tmp.sids,
                                       ubb = ubb)
-  assign("tmp.data", value = tmp.data, envir=globalenv())
+  #assign("tmp.data", value = tmp.data, envir=globalenv())
 
 
-  #CLI: Downloaded?
-  if (exists("tmp.data", envir = globalenv()) == TRUE) {
-    cli::cli_alert_success("Downloaded data from LimeSurvey.")
-  }else {
-    cli::cli_alert_warning("Cannot download data from LimeSurvey.")
-  }
+  # #CLI: Downloaded?
+  # if (exists("tmp.data", envir = globalenv()) == TRUE) {
+  #   cli::cli_alert_success("Downloaded data from LimeSurvey.")
+  # }else {
+  #   cli::cli_alert_warning("Cannot download data from LimeSurvey.")
+  # }
 
 
   #N to print in report
   tmp.n <- get_n(audience, data = tmp.sids.df)
-  assign("tmp.n", value = tmp.n, envir=globalenv())
+  #assign("tmp.n", value = tmp.n, envir=globalenv())
 
 
   #Get meta data
@@ -1074,10 +1075,12 @@ get_parameter <- function (snr,
                               audience = audience,
                               report = tmp.report,
                               ganztag = ganztag)
-  assign("tmp.meta", value = tmp.meta, envir=globalenv())
+  #assign("tmp.meta", value = tmp.meta, envir=globalenv())
 
   #Duration (tmp.dauer) or UBB only, otherwise NULL
-  assign("tmp.dauer", value = NULL, envir=globalenv())
+  tmp.dauer <- NULL
+  tmp.freitext <- NULL
+  #assign("tmp.dauer", value = NULL, envir=globalenv())
 
   #Further adjustments for UBB
   if (ubb == TRUE) {
@@ -1094,7 +1097,7 @@ get_parameter <- function (snr,
     freitext <- tmp.data |> dplyr::filter(vars == "A311ub")
     tmp.freitext <- freitext$vals
     #tmp.freitext <- unique(text)
-    assign("tmp.freitext", value = tmp.freitext, envir=globalenv())
+    #assign("tmp.freitext", value = tmp.freitext, envir=globalenv())
 
     #Dauer of UBB
     tmp.dauer <- tmp.data |> dplyr::filter(vars == "Dauer") |>
@@ -1113,16 +1116,25 @@ get_parameter <- function (snr,
     }
 
     #tmp.dauer <- "45 Minuten"
-    assign("tmp.dauer", value = tmp.dauer, envir=globalenv())
+    #assign("tmp.dauer", value = tmp.dauer, envir=globalenv())
 
     #tmp.meta <- tmp.meta[-1]
-    assign("tmp.meta", value = tmp.meta, envir=globalenv())
+    #assign("tmp.meta", value = tmp.meta, envir=globalenv())
   }
 
   cli::cli_alert_success("All parameters set.")
-  if (interactive() == TRUE) {
-    return(tmp.data)
-  }
+  mylist <- list(
+    name = tmp.name,
+    data = tmp.data,
+    meta = tmp.meta,
+    n = tmp.n,
+    rprtpckg = tmp.rprtpckg,
+    survey = tmp.survey,
+    report = tmp.report,
+    dauer = tmp.dauer,
+    freitext = tmp.freitext
+  )
+  return(mylist)
 
 }
 

@@ -736,14 +736,32 @@ run_Parallel <- function(snr,
                         ganztag,
                         stype) {
 
-  assign("ubb", value = ubb, envir=globalenv())
+  #assign("ubb", value = ubb, envir=globalenv())
 
   cli::cli_progress_step("Create data and plots", spinner = TRUE)
-  get_parameter(snr = snr,
-                audience = audience,
-                ubb = ubb,
-                ganztag = ganztag,
-                stype = stype)
+  snrparams <- get_parameter(
+    snr = snr,
+    audience = audience,
+    ubb = ubb,
+    ganztag = ganztag,
+    stype = stype
+  )
+
+  tmp.data <- snrparams$data
+  tmp.meta <- snrparams$meta
+  tmp.n <- snrparams$n
+  tmp.rprtpckg <- snrparams$rprtpckg
+  tmp.survey <- snrparams$survey
+  tmp.report <- snrparams$report
+  tmp.dauer <- snrparams$dauer
+  tmp.freitext <- snrparams$freitext
+  tmp.name <- snrparams$name
+
+  # get_parameter(snr = snr,
+  #               audience = audience,
+  #               ubb = ubb,
+  #               ganztag = ganztag,
+  #               stype = stype)
 
 
   cli::cli_progress_update();

@@ -56,7 +56,7 @@ ReportPreview <- function(snr, audience, ubb, ganztag, stype) {
 
   # If file doesn't exist, create a temporary file with fallback content
   if (md_path == "") {
-    warning("Could not find content.md in package, using fallback content")
+    warning("Could not find content.md in package, using fallback content.")
 
     fallback_content <- "# Could not find content.md in package"
 

@@ -124,3 +124,25 @@ NULL
 #' @name schools_names
 #' @docType data
 NULL
+
+#' The Master to Templates data
+#'
+#' This data contains the school names.
+#'
+#' @format A data frame with 104 rows and 9 variables:
+#' \describe{
+#'   \item{sart}{Schulart}
+#'   \item{pckg}{Packet}
+#'   \item{survey}{Indicator for survey or not}
+#'   \item{surveyls_title}{Survey title in Lime Survey}
+#'   \item{template}{Template name}
+#'   \item{rpt}{Report}
+#'   \item{rpt_overall}{Report Overall}
+#'   \item{surveyID}{Survey ID Lime Survey}
+#'   \item{bfr_grp}{Befragtengruppe}
+#'   \item{timestamp}{Timestamp}
+#'   ...
+#' }
+#' @name master_to_template
+#' @docType data
+NULL

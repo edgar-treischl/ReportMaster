@@ -526,7 +526,7 @@ create_PlotWeb <- function (meta, snr, audience, report, data, ubb) {
             group = factor(vals)
           ),
           position = ggplot2::position_stack(vjust = 0.5),
-          size = 2.8,
+          size = 6,
           fill = "white",
           colour = "black"
         ) +
@@ -535,23 +535,23 @@ create_PlotWeb <- function (meta, snr, audience, report, data, ubb) {
           values = rev(tmp.item.labels$colors),
           drop = TRUE,
           labels = function(x)
-            stringr::str_wrap(x, width = 25)
+            stringr::str_wrap(x, width = 9)
         ) +
         ggplot2::scale_x_discrete(
           guide = ggplot2::guide_axis(n.dodge = 1),
-          labels = bold_labels,
+          labels = stringr::str_wrap(data$newlable, width = 40),
           limits = levels(forcats::fct_rev(data$newlable))
         ) +
         ggplot2::coord_flip() +
-        ggplot2::theme_minimal(base_size = 18) +
+        ggplot2::theme_minimal(base_size = 32) +
         ggplot2::theme(
           legend.position = "bottom",
           #legend.box.margin = ggplot2::margin(10, 10, 10, 10),
-          legend.spacing.y = ggplot2::unit(1, "cm"),
-          legend.key.size = ggplot2::unit(1, "lines"),
-          legend.text = ggplot2::element_text(size = 16, lineheight = 0.8),
+          #legend.spacing.y = ggplot2::unit(1, "cm"),
+          #legend.key.size = ggplot2::unit(1, "lines"),
+          legend.text = ggplot2::element_text(size = 26, lineheight = 0.8),
           #axis.text = ggplot2::element_text(size = 9),
-          axis.text = ggtext::element_markdown(size = 18),
+          #axis.text = ggtext::element_markdown(size = 18),
           axis.text.y = ggplot2::element_text(hjust = 0)
         ) +
         ggplot2::labs(

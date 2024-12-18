@@ -869,21 +869,45 @@ get_snrlist <- function(drop = TRUE,
 get_n = function (audience,
                   data) {
 
+  #In case of one survey, we get the number of respondents
   tmp.sids.df <- data
+  which_n <- stringr::str_which(tmp.sids.df$surveyls_title, audience)
 
-  if (audience == "all") {
-    #tmp.sids.df$full_responses
-    tmp.n <- tmp.sids.df |> dplyr::summarise(n = sum(as.numeric(completed_responses)))
-    return(tmp.n$n)
-    if (audience == "none") {
-      tmp.n <- tmp.sids.df$completed_responses
-      return(tmp.n)
-    }
-  }else {
-    which_n <- stringr::str_which(tmp.sids.df$surveyls_title, audience)
+  if (length(which_n) == 1) {
     tmp.n <- tmp.sids.df$completed_responses[which_n]
-    return(tmp.n)
+  }else {
+    #In case of several surveys or groups
+    #If it only one group (several sus)
+    if (audience != "all") {
+      tmp.sids.df$audience <- stringr::str_detect(tmp.sids.df$surveyls_title, audience)
+      tmp.sids.df<- tmp.sids.df |> dplyr::filter(audience == TRUE)
+    }
+
+    befragung <- sub("^[^_]*_[^_]*_", "", tmp.sids.df$surveyls_title)
+    tmp.sids.df$template <- paste0("tmpl_", befragung)
+
+    bfr_grp <- master_to_template |> dplyr::select(template, bfr_grp)
+
+    df <- tmp.sids.df |> dplyr::left_join(bfr_grp, by = "template")
+    df$n_string <- paste0(df$completed_responses, " (", df$bfr_grp, ")")
+    tmp.n <- paste(df$n_string, collapse = ", ")
   }
+
+  #OLD
+  # if (audience == "all") {
+  #   #tmp.sids.df$full_responses
+  #   tmp.n <- tmp.sids.df |> dplyr::summarise(n = sum(as.numeric(completed_responses)))
+  #   return(tmp.n$n)
+  #   if (audience == "none") {
+  #     tmp.n <- tmp.sids.df$completed_responses
+  #     return(tmp.n)
+  #   }
+  # }else {
+  #   which_n <- stringr::str_which(tmp.sids.df$surveyls_title, audience)
+  #   tmp.n <- tmp.sids.df$completed_responses[which_n]
+  #   return(tmp.n)
+  # }
+  return(tmp.n)
 }
 
 

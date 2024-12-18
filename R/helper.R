@@ -475,7 +475,7 @@ create_report <- function(snr,
 
 
   cli::cli_progress_step("Create data and plots:", spinner = TRUE)
-  create_allplots2(meta = tmp.meta,
+  export_AllPlots(meta = tmp.meta,
                    audience = audience,
                    data = tmp.data,
                    report = tmp.report,
@@ -741,7 +741,8 @@ run_Parallel <- function(snr,
     export = TRUE
   ), .progress = TRUE,
   .options = furrr::furrr_options(
-    packages = c("ggtext", "showtext", "stringr", "ggwordcloud", "dplyr")  # Ensure packages are loaded in each worker
+    packages = c("ggtext", "showtext", "stringr", "ggwordcloud", "dplyr"),
+    seed = NULL
   ))
 
   # cli::cli_progress_update();

@@ -138,14 +138,13 @@ ReportPreview <- function(snr, audience, ubb, ganztag, stype) {
 
     # Generate plot function
     generate_plot <- function() {
-      ReportMaster::export_plot(
+      ReportMaster::create_PlotWeb(
         meta = input$selected_plot,
         snr = snr,
         audience = audience,
         report = tmp.report,
         ubb = ubb,
-        data = tmp.data,
-        export = FALSE
+        data = tmp.data
       )
     }
 
@@ -168,7 +167,7 @@ ReportPreview <- function(snr, audience, ubb, ganztag, stype) {
           shiny::div(
             style = "margin-top: 5px; font-size: 0.8em; color: #666;",
             shiny::icon("clock"),
-            "This process may take several minutes"
+            "This process may take several minutes."
           )
         )
       }

@@ -57,7 +57,7 @@ export_plot <- function (meta,
     #Create a wordplot if plotid is A3a
     if (tmp.plotid == "A3a") {
       tmp.var_plot <- 6
-      tmp.p <- createWordCloud(data = tmp.data)
+      tmp.p <- createWordCloud(data = data)
 
     }
 
@@ -129,6 +129,8 @@ export_plot <- function (meta,
 
 
 
+
+
 #' Create a ggplot based on prepare data
 #'
 #' @description Function creates and export a plot.
@@ -160,7 +162,6 @@ create_ggplot <- function(data,
       # Combine the bold part and the rest of the string
       new_label <- paste0(bold_part, rest_part)
     })
-
 
     tmp.p <- ggplot2::ggplot(data, ggplot2::aes(fill = vals, y = anz, x = forcats::fct_rev(data$newlable))) +
       ggplot2::geom_bar(
@@ -203,7 +204,6 @@ create_ggplot <- function(data,
         axis.text.y = ggplot2::element_text(hjust = 0)
       ) +
       ggplot2::labs(x = '', y = 'Anzahl', fill = "")
-
   }else {
     data$newlable <- paste0(data$vars, ": ", data$label_short)
     data$newlable <- as.factor(data$newlable)
@@ -278,7 +278,7 @@ create_ggplot <- function(data,
 #' @param ubb UBB
 #' @export
 
-create_allplots2 <- function (meta,
+export_AllPlots <- function (meta,
                              snr,
                              audience,
                              report,
@@ -326,7 +326,7 @@ create_allplots2 <- function (meta,
 #' @export
 
 createWordCloud <- function(data) {
-  freitext <- tmp.data |> dplyr::filter(vars == "A311ub")
+  freitext <- data |> dplyr::filter(vars == "A311ub")
 
   df <- tibble::tibble(Angabe = freitext$vals)
 
@@ -352,7 +352,6 @@ createWordCloud <- function(data) {
 
   #sysfonts::font_add("Gloria Hallelujah", "GloriaHallelujah-Regular.ttf")
   #showtext::showtext_auto()
-  seed=NULL
 
   tmp.p <- ggplot2::ggplot(word_count,
                            ggplot2::aes(label = Angabe,
@@ -368,4 +367,204 @@ createWordCloud <- function(data) {
 }
 
 
+#' Create a Plot for the Web
+#'
+#' @description Function creates and export a plot.
+#' @param meta Meta data
+#' @param snr School number
+#' @param audience Audience
+#' @param report Report template
+#' @param data Data
+#' @param ubb UBB
+#' @export
+
+create_PlotWeb <- function (meta, snr, audience, report, data, ubb) {
+  #Load fonts: newlable
+  font_name <- "Noto Sans"
+  font_path <- "NotoSans-Regular.ttf"
+  #Check if font is available
+  available_fonts <- sysfonts::font_files()
+
+  #Add font if available
+  if (font_path %in% available_fonts$file) {
+    sysfonts::font_add("Noto Sans", "NotoSans-Regular.ttf")
+    showtext::showtext_auto()
+  } else {
+    font_name <- "sans"
+  }
+
+
+  #Split meta list
+  tmp.var <- stringr::str_split(meta, "#") |> unlist()
+  tmp.rprtpckg <- tmp.var[1]
+  tmp.plotid <- tmp.var[2]
+
+  #Get data
+  plot.df <- plotGetData(
+    data = data,
+    plotid = tmp.plotid,
+    rprtpckg = tmp.rprtpckg,
+    report = report,
+    audience  = audience
+  )
+
+
+  if (nrow(plot.df) == 0) {
+    #Just in case no data is available
+    tmp.var_plot <- 6
+    tmp.p <- ggplot2::ggplot() +
+      ggplot2::geom_text(ggplot2::aes(x = 0, y = 0, label = "Data is not available."),
+                         size = 12) +
+      ggplot2::theme_void()
+
+    #Create a wordplot if plotid is A3a
+    if (tmp.plotid == "A3a") {
+      tmp.var_plot <- 6
+      tmp.p <- createWordCloud(data = data)
+
+    }
+
+
+  } else {
+    #Get set
+    tmp.set <- plot.df |>
+      dplyr::group_by(set) |>
+      dplyr::summarise(anz = dplyr::n()) |>
+      dplyr::select(set) |>
+      unlist()
+
+    #Labels
+    # tmp.item.labels <- readxl::read_excel(here::here("orig/report_meta_dev.xlsx"),
+    #                                       sheet = 'sets')
+
+    tmp.item.labels <- sets |> dplyr::filter(set == tmp.set) |>
+      dplyr::arrange(dplyr::desc(sort))
+
+
+    #Check how many variables (for export)
+    tmp.var_plot <- length(unique(plot.df$vars))
+
+
+    #Manual adjustments for filter questions
+    plot.df <- plot.df |> dplyr::filter(vals != "k. A.")
+    data <- plot.df
+    #Create plot
+    if (ubb) {
+      data$newlable <- data$label_short
+      data$newlable <- as.factor(data$newlable)
+      data$newlable <- stringr::str_replace(data$newlable, " ", ": ")
+
+      tmp.p <- ggplot2::ggplot(data,
+                               ggplot2::aes(
+                                 fill = vals,
+                                 y = anz,
+                                 x = forcats::fct_rev(data$newlable)
+                               )) +
+        ggplot2::geom_bar(
+          stat = 'identity',
+          position = ggplot2::position_stack(),
+          width = 0.5
+        ) +
+        ggplot2::geom_label(
+          ggplot2::aes(
+            label = paste(as.character(anz), "\n", label_n),
+            group = factor(vals)
+          ),
+          position = ggplot2::position_stack(vjust = 0.5),
+          size = 6,
+          fill = "white",
+          colour = "black"
+        ) +
+        ggplot2::scale_fill_manual(
+          breaks = rev(tmp.item.labels$labels),
+          values = rev(tmp.item.labels$colors),
+          drop = TRUE,
+          labels = function(x)
+            stringr::str_wrap(x, width = 20)  # Wrap legend text
+        ) +
+        ggplot2::scale_x_discrete(
+          guide = ggplot2::guide_axis(n.dodge = 1),
+          labels = stringr::str_wrap(data$newlable, width = 40),
+          limits = levels(forcats::fct_rev(data$newlable))
+        ) +
+        ggplot2::scale_y_continuous(
+          breaks = function(x)
+            scales::pretty_breaks()(x) |> round(),
+          # Apply rounding to the breaks
+          labels = scales::number_format(accuracy = 1)  # Format labels as integers
+        ) +
+        ggplot2::coord_flip() +
+        ggplot2::theme_minimal(base_size = 32) +
+        ggplot2::theme(
+          legend.position = "bottom",
+          #legend.box.margin = ggplot2::margin(10, 10, 10, 10),
+          #legend.spacing.y = ggplot2::unit(1, "cm"),
+          #legend.key.size = ggplot2::unit(1, "lines"),
+          legend.text = ggplot2::element_text(size = 26),
+          #axis.text = ggplot2::element_text(size = 9),
+          #axis.text = ggtext::element_markdown(size = 22),
+          axis.text.y = ggplot2::element_text(hjust = 0)
+        ) +
+        ggplot2::labs(x = '', y = 'Anzahl', fill = "")
+    } else {
+      data$newlable <- paste0(data$vars, ": ", data$label_short)
+      data$newlable <- as.factor(data$newlable)
+
+      tmp.p <- ggplot2::ggplot(data, ggplot2::aes(
+        fill = vals,
+        y = p,
+        x = forcats::fct_rev(data$newlable)
+      )) +
+        ggplot2::geom_bar(
+          stat = 'identity',
+          position = ggplot2::position_stack(),
+          width = 0.5
+        ) +
+        ggplot2::geom_label(
+          ggplot2::aes(
+            label = ifelse(p > 3, paste0(label_n, "\n", "(", anz, ")"), "*"),
+            group = factor(vals)
+          ),
+          position = ggplot2::position_stack(vjust = 0.5),
+          size = 2.8,
+          fill = "white",
+          colour = "black"
+        ) +
+        ggplot2::scale_fill_manual(
+          breaks = rev(tmp.item.labels$labels),
+          values = rev(tmp.item.labels$colors),
+          drop = TRUE,
+          labels = function(x)
+            stringr::str_wrap(x, width = 25)
+        ) +
+        ggplot2::scale_x_discrete(
+          guide = ggplot2::guide_axis(n.dodge = 1),
+          labels = bold_labels,
+          limits = levels(forcats::fct_rev(data$newlable))
+        ) +
+        ggplot2::coord_flip() +
+        ggplot2::theme_minimal(base_size = 18) +
+        ggplot2::theme(
+          legend.position = "bottom",
+          #legend.box.margin = ggplot2::margin(10, 10, 10, 10),
+          legend.spacing.y = ggplot2::unit(1, "cm"),
+          legend.key.size = ggplot2::unit(1, "lines"),
+          legend.text = ggplot2::element_text(size = 16, lineheight = 0.8),
+          #axis.text = ggplot2::element_text(size = 9),
+          axis.text = ggtext::element_markdown(size = 18),
+          axis.text.y = ggplot2::element_text(hjust = 0)
+        ) +
+        ggplot2::labs(
+          x = '',
+          y = 'Prozent',
+          fill = "",
+          caption = "*: Numerische Werte kleiner 3 Prozent werden aufgrund verbesserter Lesbarkeit nicht grafisch dargestellt."
+        ) +
+        ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1))
+    }
+  }
+
+  return(tmp.p)
+
+}
 

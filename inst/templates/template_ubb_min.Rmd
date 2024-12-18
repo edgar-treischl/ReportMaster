@@ -5,7 +5,7 @@ output:
   pdf_document:
     latex_engine: xelatex
     keep_tex: true
-    citation_package: none  
+    citation_package: default  
     toc: false       
     number_sections: false
 header-includes:

@@ -357,7 +357,6 @@ create_report <- function(snr,
 
   #for header plot
   file.copy(paste0(package_path, "header_eva_las.png"), here::here(path,"plots/p"))
-  file.copy(paste0(package_path, "NotoSans-Regular.ttf"), here::here(path,"plots"))
 
   #Get name of school
   tmp.name <- get_sname(snr)
@@ -396,12 +395,8 @@ create_report <- function(snr,
 
   tmp.rprtpckg <- rprtpckg_list[[1]]
   tmp.survey <- rprtpckg_list[[2]]
-
-
   tmp.report <- rprtpckg_list[[3]]
   assign("tmp.report", value = tmp.report, envir=globalenv())
-
-
 
   #Error if data is not available:
   tmp.data <- surveyGetDataLongformat(ids = tmp.sids,

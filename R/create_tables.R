@@ -25,7 +25,8 @@ get_table = function (meta,
   tmp.plotid <- tmp.var[2]
 
   if (tmp.plotid == "A3a") {
-    ft <- TableWorldCloud(data = tmp.data)
+    #ft <- TableWorldCloud(data = tmp.data)
+    cli::cli_abort("TableWorldCloud not implemented yet")
   }else {
     #.GlobalEnv$tmp.data
     data <- plotGetData(data = data,
@@ -116,6 +117,8 @@ get_table = function (meta,
     #Remove label
     dftable <- dftable |>
       dplyr::select(-label)
+
+    #return(dftable)
 
     # dftable <- dftable |>
     #   dplyr::mutate(variable = stringr::str_wrap(variable, width = 50))

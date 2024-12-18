@@ -352,6 +352,7 @@ createWordCloud <- function(data) {
 
   #sysfonts::font_add("Gloria Hallelujah", "GloriaHallelujah-Regular.ttf")
   #showtext::showtext_auto()
+  seed=NULL
 
   tmp.p <- ggplot2::ggplot(word_count,
                            ggplot2::aes(label = Angabe,

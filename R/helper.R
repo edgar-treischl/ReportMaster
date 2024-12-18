@@ -50,100 +50,10 @@ get_sname = function (snr) {
   return(tmp.name)
 }
 
-#' Get Rmd Code for the Report
-#' @description Depending on the number of plots and tables, the function
-#'  creates the Rmd chunks for the report
-#' @param x_seq Sequence
-#' @return Character
-#' @export
-
-get_rmd <- function(x_seq) {
-  # Initialize a list to hold the chunks
-  rmd_chunks <- c()
-
-  # Loop over the sequence and generate the RMarkdown content for each value of `x_seq`
-  for (x in x_seq) {
-    chunk1 <- paste0("```{r, results='asis'}\n", "cat(paste0('## ', header_report$header1[", x, "]))\n", "```")
-    chunk2 <- paste0("```{r}\n", "plot_list[[", x, "]]\n", "```")
-    chunk3 <- paste0("```{r}\n", "table_list[[", x, "]]\n", "```")
-
-    # Add vertical fill to the third chunk
-    #chunk3_vfill <- "\\vfill"
-    chunk3_vfill <- '\\vspace*{1cm}'
-
-    # Add each chunk to the list
-    rmd_chunks <- c(rmd_chunks, chunk1, chunk2, chunk3_vfill, chunk3)
-
-    # Add a LaTeX page break after each set of chunks
-    rmd_chunks <- c(rmd_chunks, "\\newpage")
-  }
-
-  # Combine all the chunks into a single string, separated by newlines
-  rmd_content <- paste(rmd_chunks, collapse = "\n\n")
-
-  # Return the full RMarkdown content as a single string
-  return(rmd_content)
-}
 
 
-#' Get Rmd Code for the Report
-#' @description Depending on the number of plots and tables, the function
-#'  creates the Rmd chunks for the report
-#' @param x_seq Sequence
-#' @return Character
-#' @export
 
-get_rmd3 <- function(meta, num_bars) {
 
-  # Step 3: Initialize a list to store the RMarkdown chunks
-  rmd_chunks <- list()
-
-  # Standard plot height
-  standard_height <- 5
-
-  # Step 4: Loop through the sequence and generate RMarkdown content
-  for (x in 1:length(meta)) {
-    # Access the correct num_bars for the current index
-    num_bars_x <- num_bars[x]
-
-    # Handle cases where num_bars_x might be NULL or NA
-    if (is.null(num_bars_x) || is.na(num_bars_x)) {
-      warning(paste("Invalid number of bars for plot", x, ". Using default height."))
-      num_bars_x <- 3  # Default value for num_bars_x
-    }
-
-    # Adjust fig.height based on the number of bars
-    if (num_bars_x == 3) {
-      fig_height <- standard_height - 1  # Decrease by 1 for 3 bars
-    } else if (num_bars_x == 2) {
-      fig_height <- standard_height - 2  # Decrease by 2 for 2 bars
-    } else if (num_bars_x == 1) {
-      fig_height <- standard_height - 3  # Decrease by 3 for 1 bar
-    } else {
-      fig_height <- standard_height  # Keep standard height for more than 3 bars
-    }
-
-    # Ensure fig_height doesn't go below a minimum value (e.g., 3)
-    fig_height <- max(fig_height, 3)
-
-    # Create RMarkdown chunks
-    chunk1 <- sprintf("```{r, results='asis'}\ncat(paste0('## ', header_report$header1[%d]))\n```", x)
-    chunk2 <- sprintf("```{r, fig.height=%d}\nplot_list[[%d]]\n```", fig_height, x)
-    chunk3 <- sprintf("```{r}\ntable_list[[%d]]\n```", x)
-    chunk3_vfill <- '\\vspace*{1cm}'  # Vertical space for chunk 3
-    #"\\newpage"
-
-    # Append chunks to the list
-    #rmd_chunks <- c(rmd_chunks, chunk1, chunk2)
-    rmd_chunks <- c(rmd_chunks, chunk1, chunk2, chunk3_vfill, chunk3)
-  }
-
-  # Step 5: Combine all chunks into a single string, separated by newlines
-  rmd_content <- paste(rmd_chunks, collapse = "\n\n")
-
-  # Return the full RMarkdown content
-  return(rmd_content)
-}
 
 
 #' Get Rmd Code for the Report
@@ -153,10 +63,7 @@ get_rmd3 <- function(meta, num_bars) {
 #' @return Character
 #' @export
 #'
-get_rmdX <- function(meta,
-                     num_bars,
-                     header) {
-
+create_rmd <- function(meta, num_bars, header) {
   # Step 1: Ensure that meta and num_bars have the same length
   if (length(meta) != length(num_bars)) {
     stop("The length of 'meta' and 'num_bars' must be the same.")
@@ -178,7 +85,11 @@ get_rmdX <- function(meta,
 
     # Handle cases where num_bars_x might be NULL or NA
     if (is.null(num_bars_x) || is.na(num_bars_x)) {
-      warning(paste("Invalid number of bars for plot", x, ". Using default height."))
+      warning(paste(
+        "Invalid number of bars for plot",
+        x,
+        ". Using default height."
+      ))
       num_bars_x <- 3  # Default value for num_bars_x
     }
 
@@ -203,9 +114,15 @@ get_rmdX <- function(meta,
     #                  "cat(paste0('## ', '", header1_x, "'[", x, "]))\n",
     #                  "```")
 
-    chunk2 <- paste0("```{r, fig.height=", fig_height, "}\n",
-                     "knitr::include_graphics('plots/", plot_name, "_plot.pdf')\n",
-                     "```")
+    chunk2 <- paste0(
+      "```{r, fig.height=",
+      fig_height,
+      "}\n",
+      "knitr::include_graphics('plots/",
+      plot_name,
+      "_plot.pdf')\n",
+      "```"
+    )
 
     # chunk3 <- paste0("```{r}\n",
     #                  "table_list[['", plot_name, "']]\n",
@@ -267,8 +184,7 @@ generate_rmd <- function(meta,
 
   # Example usage:
   #plots_report <- sub(".*#(.*)", "\\1", tmp.meta)
-  rmd_content <- get_rmdX(meta = meta, num_bars = num_bars,
-                          header = header)
+  rmd_content <- create_rmd(meta = meta, num_bars = num_bars, header = header)
 
   # Combine the YAML header with the RMarkdown content
   full_rmd <- paste(yaml_header, rmd_content, sep = "\n\n")
@@ -287,7 +203,7 @@ generate_rmd <- function(meta,
 
 
 
-#generate_rmd(1:44, ubb = TRUE)
+
 
 #' Create directories
 #' @description Create directories for the report

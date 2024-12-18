@@ -156,7 +156,7 @@ create_rmd <- function(meta, num_bars, header) {
 #' @export
 
 
-generate_rmd <- function(meta,
+create_Template <- function(meta,
                          num_bars,
                          ubb,
                          header,
@@ -768,11 +768,13 @@ run_Parallel <- function(snr,
   tmp.dir <- get_directory(snr = snr)
 
   # Create a template Rmd file
-  generate_rmd(meta = tmp.meta,
-               num_bars = tmp.count,
-               ubb = ubb,
-               header = headertxt,
-               file_name = paste0(tmp.dir, "/", "template.Rmd"))
+  create_Template(
+    meta = tmp.meta,
+    num_bars = tmp.count,
+    ubb = ubb,
+    header = headertxt,
+    file_name = paste0(tmp.dir, "/", "template.Rmd")
+  )
 
   rmarkdown::render(
     input = paste0(tmp.dir, "/", "template.Rmd"),
@@ -803,9 +805,9 @@ run_Parallel <- function(snr,
     usethis::ui_done("Exported PDF file for school {usethis::ui_value(snr)} and group {usethis::ui_value(audience)}")
   }
 
-  # if (interactive() == TRUE) {
-  #   invisible(system(paste0('open ', x)))
-  # }
+  if (interactive() == TRUE) {
+    invisible(system(paste0('open ', x)))
+  }
 
 
 }

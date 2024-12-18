@@ -568,3 +568,130 @@ create_PlotWeb <- function (meta, snr, audience, report, data, ubb) {
 
 }
 
+# library(bslib)
+#
+# library(pdftools)
+# library(png)
+# library(purrr)
+#
+#
+# convert_pdf_to_png <- function(pdf_file) {
+#   # Extract the base name (without extension) from the PDF file
+#   base_name <- tools::file_path_sans_ext(base::basename(pdf_file))
+#
+#   # Render the single page of the PDF (300 dpi)
+#   img <- pdftools::pdf_render_page(pdf_file, page = 1, dpi = 300)
+#
+#   # Define the output PNG file name using the base name
+#   # Define the output PNG file name
+#   tmp.dir <- get_directory(snr = tmp.snr)
+#   tmp.dir <- file.path(tmp.dir, "plots")
+#
+#   output_file <- file.path(tmp.dir, paste0(base_name, ".png"))
+#
+#   # Save the image as PNG
+#   png::writePNG(img, output_file)
+#
+#   # Return the output file path
+#   return(output_file)
+# }
+#
+# # Call the function to convert a PDF to PNG
+#
+# tmp.dir <- get_directory(snr = tmp.snr)
+# tmp.dir <- file.path(tmp.dir, "plots")
+# #List all pdf files here
+# pdffiles <- list.files(tmp.dir, full.names = TRUE, pattern = ".pdf")
+#
+#
+# convert_pdf_to_png(pdffiles[2])
+#
+#
+# num_cores <- parallel::detectCores()
+# workers <- max(1, num_cores - 1)  #
+#
+#
+# #plan(multicore, workers = 4)  # Adjust workers based on your CPU cores
+# future::plan(future::multisession, workers = num_cores)  #
+#
+# furrr::future_map(pdffiles, ~convert_pdf_to_png(.x))
+#
+
+#' Create PDFs (for serial runs only)
+#'
+#' @description Create a PDF report based on exported plots and data.
+#' @param snr School number
+#' @param audience Audience
+#' @param name Name
+#' @param ubb UBB
+#' @param n Number of observations
+#' @param results String for reporting group
+#' @param d Duration (UBB only)
+#' @param drop Drop the temporary files
+#'
+#' @return PDF file
+
+create_pdfs <- function (snr,
+                         audience,
+                         name,
+                         ubb,
+                         n,
+                         results,
+                         d = NULL,
+                         drop = TRUE) {
+
+  year <- format(Sys.Date(), "%Y")
+  tmp.dir_res <- get_directory_res(snr = snr, audience = audience)
+  tmp.dir <- get_directory(snr = snr)
+
+  #Create report for UBB or survey
+  if (ubb == TRUE) {
+    #UBB has open comments (tmp.freitext) to include in report
+    results <- tmp.freitext
+
+    rmarkdown::render(
+      input = paste0(tmp.dir, "/plots/template.Rmd"),
+      output_file = paste0(tmp.dir, "/", snr, "_results_", audience, ".pdf"),
+      quiet = TRUE,
+      params = list(
+        snr = snr,
+        name = name,
+        t = year,
+        n = n,
+        d = d,
+        fb = results
+      ))
+  }
+
+  if (ubb == FALSE) {
+    rmarkdown::render(
+      input = here::here(tmp.dir, "plots/template.Rmd"),
+      output_file = paste0(here::here(tmp.dir), "/", snr, "_results_", audience, ".pdf"),
+      quiet = TRUE,
+      params = list(
+        snr = snr,
+        name = name,
+        t = year,
+        n = n,
+        fb = results
+      ))
+  }
+
+  if (drop == TRUE) {
+    unlink(tmp.dir_res, recursive=TRUE)
+  }
+
+  #Report via CLI if results are available:
+  x <- paste0(here::here(tmp.dir), "/", snr, "_results_", audience, ".pdf")
+
+  if (file.exists(x) == TRUE) {
+    usethis::ui_done("Exported PDF file for school {usethis::ui_value(snr)} and group {usethis::ui_value(audience)}")
+  }
+
+  if (interactive() == TRUE) {
+    invisible(system(paste0('open ', x)))
+  }
+
+}
+
+
